@@ -157,6 +157,11 @@ struct HomeView: View {
                         ForEach(Difficulty.allCases, id: \.self) { difficulty in
                             Text(difficulty.displayName)
                                 .tag(difficulty)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(difficulty.color)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                     }
                     .pickerStyle(.segmented)
@@ -272,7 +277,11 @@ struct HomeView: View {
                         .padding(.vertical, 16)
                         .background(
                             ZStack {
-                                Color(.systemBackground).opacity(0.1)
+                                LinearGradient(
+                                    colors: [Color.blue, Color.purple],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
                                 AIGlowingBackground()
                             }
                         )

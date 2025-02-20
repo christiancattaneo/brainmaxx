@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // MARK: - Enums
 enum Difficulty: String, Codable, CaseIterable {
@@ -11,6 +12,14 @@ enum Difficulty: String, Codable, CaseIterable {
         case .easy: return "Easy"
         case .medium: return "Medium"
         case .hard: return "Hard"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .easy: return Color(red: 1.0, green: 0.9, blue: 0.4) // Slightly yellow
+        case .medium: return Color.orange
+        case .hard: return Color.red
         }
     }
     
