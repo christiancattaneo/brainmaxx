@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "brain-lightbulb.png",
+      "filename" : "brain.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "brain 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "brain 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

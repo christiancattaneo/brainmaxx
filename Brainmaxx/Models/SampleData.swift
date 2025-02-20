@@ -883,7 +883,7 @@ struct SampleData {
             id: "ai",
             name: "AI Questions",
             description: "AI-generated adaptive questions",
-            iconName: "brain.head.profile",
+            iconName: "sparkles.rectangle.stack",
             topics: [
                 "Generated": [] // Questions will be generated on-demand
             ]

@@ -230,11 +230,23 @@ class DataService: ObservableObject {
         // Load existing AI subjects
         var aiSubjects = loadAISubjects() ?? []
         
+        // Create the AI subject with the custom icon
+        var aiSubject = Subject(
+            id: subject.id,
+            name: subject.name,
+            description: subject.description,
+            iconName: subject.iconName,  // Preserve the custom icon
+            topics: ["Generated": []]    // Initialize with empty topics
+        )
+        
+        // Update the topics using the public method
+        aiSubject.updateTopics(subject.getTopics())
+        
         // Remove existing subject with same ID if exists
         aiSubjects.removeAll { $0.id == subject.id }
         
         // Add new subject
-        aiSubjects.append(subject)
+        aiSubjects.append(aiSubject)
         
         // Save updated list to UserDefaults
         do {
@@ -248,11 +260,11 @@ class DataService: ObservableObject {
         // Update current subjects list
         DispatchQueue.main.async {
             self.subjects.removeAll { $0.id == subject.id }
-            self.subjects.append(subject)
+            self.subjects.append(aiSubject)
             // Update cache with new data
             self.saveToCache(subjects: self.subjects)
         }
         
-        print("✅ Added/Updated AI subject: \(subject.name)")
+        print("✅ Added/Updated AI subject: \(subject.name) with icon: \(subject.iconName)")
     }
 }

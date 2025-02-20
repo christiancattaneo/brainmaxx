@@ -12,15 +12,29 @@ class OpenAIService {
     }
     
     private init() {
-        // Load API key from Configuration.plist
-        if let path = Bundle.main.path(forResource: "Configuration", ofType: "plist"),
-           let dict = NSDictionary(contentsOfFile: path),
-           let key = dict["OpenAIKey"] as? String,
-           key != "YOUR_API_KEY_HERE" && !key.isEmpty {
-            self.apiKey = key
+        // Load API key from environment
+        if let envPath = Bundle.main.path(forResource: ".env", ofType: nil),
+           let envContents = try? String(contentsOfFile: envPath, encoding: .utf8) {
+            // Parse the .env file
+            let lines = envContents.components(separatedBy: .newlines)
+            let keyValuePairs = lines.compactMap { line -> (String, String)? in
+                let parts = line.split(separator: "=", maxSplits: 1).map(String.init)
+                guard parts.count == 2 else { return nil }
+                return (parts[0].trimmingCharacters(in: .whitespaces), 
+                       parts[1].trimmingCharacters(in: .whitespaces))
+            }
+            let env = Dictionary(uniqueKeysWithValues: keyValuePairs)
+            
+            if let key = env["OPENAI_API_KEY"], !key.isEmpty {
+                self.apiKey = key
+                print("✅ Loaded API key from .env file")
+            } else {
+                self.apiKey = ""
+                print("⚠️ No API key found in .env file")
+            }
         } else {
             self.apiKey = ""
-            print("⚠️ Invalid or missing OpenAI API key in Configuration.plist")
+            print("⚠️ Could not load .env file")
         }
     }
     

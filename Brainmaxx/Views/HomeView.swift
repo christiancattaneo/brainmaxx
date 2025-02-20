@@ -34,16 +34,12 @@ struct HomeView: View {
                         // Title and Description
                         HStack(spacing: 16) {
                             Group {
-                                if let image = UIImage(named: "app-logo") {
+                                if let image = UIImage(named: "brain-lightbulb") {
                                     Image(uiImage: image)
                                         .resizable()
                                         .scaledToFit()
-                                } else if let bundleImage = UIImage(contentsOfFile: Bundle.main.path(forResource: "newlogo", ofType: "png") ?? "") {
-                                    Image(uiImage: bundleImage)
-                                        .resizable()
-                                        .scaledToFit()
                                 } else {
-                                    Image(systemName: "brain.head.profile")
+                                    Image(systemName: "sparkles.rectangle.stack")
                                         .resizable()
                                         .scaledToFit()
                                         .foregroundColor(.blue)
@@ -219,11 +215,11 @@ struct AISubjectDialog: View {
     @FocusState private var isInputFocused: Bool
     @Environment(\.dismiss) private var dismiss
     @State private var showLoadingView = false
-    @State private var selectedSymbol = "brain.head.profile"
+    @State private var selectedSymbol = "sparkles.rectangle.stack"
     
     // Common subject symbols
     private let subjectSymbols = [
-        "brain.head.profile",      // Default AI/Learning
+        "sparkles.rectangle.stack",  // Default AI/Learning (changed from brain.head.profile)
         "book.fill",              // General education
         "function",               // Math
         "textformat",             // Language
@@ -245,12 +241,11 @@ struct AISubjectDialog: View {
         ZStack {
             if showLoadingView {
                 AILoadingView(
-                    subject: Subject(
+                    subject: Subject.createAISubject(
                         id: "ai-\(subjectInput.lowercased().replacingOccurrences(of: " ", with: "-"))",
                         name: subjectInput,
                         description: "AI-generated \(subjectInput) curriculum",
-                        iconName: selectedSymbol,
-                        topics: ["Generated": []]
+                        iconName: selectedSymbol
                     ),
                     difficulty: difficulty,
                     navigationPath: $navigationPath,
@@ -574,7 +569,7 @@ struct AILoadingView: View {
             VStack(spacing: 24) {
                 // Header
                 VStack(spacing: 8) {
-                    Image(systemName: "brain.head.profile")
+                    Image(systemName: "sparkles.rectangle.stack")
                         .font(.system(size: 40))
                         .foregroundColor(.blue)
                         .padding(.bottom, 8)

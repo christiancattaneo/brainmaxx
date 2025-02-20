@@ -69,6 +69,17 @@ struct Subject: Identifiable, Codable {
         updateQuestionsByDifficulty()
     }
     
+    // Factory method for creating AI subjects
+    static func createAISubject(id: String, name: String, description: String, iconName: String) -> Subject {
+        Subject(
+            id: id,
+            name: name,
+            description: description,
+            iconName: iconName,
+            topics: ["Generated": []]
+        )
+    }
+    
     private mutating func updateQuestionsByDifficulty() {
         questionsByDifficulty.removeAll()
         for questions in topics.values {
