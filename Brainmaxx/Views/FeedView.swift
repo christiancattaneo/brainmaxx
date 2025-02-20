@@ -183,10 +183,10 @@ struct FeedView: View {
                                                         }
                                                     }
                                                 )
-                                                .frame(width: geometry.size.width - 40, height: geometry.size.height - 40)
+                                                .frame(width: geometry.size.width - 16, height: geometry.size.height - 16)
                                                 .id(question.id)
-                                                .padding(.horizontal, 20)
-                                                .padding(.vertical, 8)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
                                             }
                                         }
                                     }

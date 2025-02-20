@@ -168,6 +168,7 @@ struct HomeView: View {
                     .padding(.horizontal)
                     .onChange(of: selectedDifficulty) { _, newDifficulty in
                         print("🎚️ Difficulty changed to: \(newDifficulty.displayName)")
+                        HapticManager.shared.selectionChanged()
                         dataService.setDifficulty(newDifficulty)
                     }
                     
@@ -291,6 +292,7 @@ struct HomeView: View {
                         .contentShape(Rectangle())
                         .onTapGesture {
                             withAnimation(.spring(response: 0.3)) {
+                                HapticManager.shared.buttonPress()
                                 showAIDialog = true
                             }
                         }

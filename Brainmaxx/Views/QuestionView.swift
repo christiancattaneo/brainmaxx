@@ -121,9 +121,11 @@ struct QuestionView: View {
                                             
                                             if isCorrect {
                                                 animateCorrect = true
+                                                HapticManager.shared.success()
                                             } else {
                                                 animateIncorrect = true
                                                 shake = true
+                                                HapticManager.shared.error()
                                             }
                                             
                                             // Show explanation immediately
@@ -181,6 +183,7 @@ struct QuestionView: View {
                                     if selectedOption != nil && question.question.displayOptions[selectedOption!] != question.question.correctAnswers.first {
                                         Button {
                                             Task {
+                                                HapticManager.shared.buttonPress()
                                                 await generateSimplerQuestion()
                                             }
                                         } label: {
@@ -291,7 +294,6 @@ struct QuestionView: View {
                             .padding()
                             .background(Color(.systemBackground))
                             .cornerRadius(10)
-                            .shadow(radius: 2)
                             .padding(.horizontal)
                             .transition(.opacity.combined(with: .move(edge: .bottom)))
                         }
@@ -313,7 +315,6 @@ struct QuestionView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color(.systemBackground))
-                        .shadow(radius: 5)
                 )
                 .padding(.top, 20)
                 .transition(.move(edge: .top).combined(with: .opacity))

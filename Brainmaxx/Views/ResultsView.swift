@@ -173,10 +173,14 @@ struct ResultsView: View {
                 ) {
                     Label("Share Results", systemImage: "square.and.arrow.up")
                         .frame(maxWidth: .infinity)
+                        .onTapGesture {
+                            HapticManager.shared.buttonPress()
+                        }
                 }
                 .buttonStyle(.bordered)
                 
                 Button {
+                    HapticManager.shared.buttonPress()
                     NotificationCenter.default.post(name: .returnToHome, object: nil)
                     dismiss()
                 } label: {
