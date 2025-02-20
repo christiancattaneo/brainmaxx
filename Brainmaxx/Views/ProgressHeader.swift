@@ -85,8 +85,6 @@ struct ProgressHeader: View {
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 24)
-        .background(Color(.systemBackground))
-        .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
         .onChange(of: points) { oldValue, newValue in
             if newValue > oldValue {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {

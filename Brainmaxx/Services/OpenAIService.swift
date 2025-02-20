@@ -38,7 +38,7 @@ class OpenAIService {
         }
     }
     
-    func generateQuestion(subject: String, difficulty: Difficulty) async throws -> Question? {
+    func generateQuestion(subject: String, difficulty: Difficulty, customPrompt: String? = nil) async throws -> Question? {
         guard !apiKey.isEmpty else {
             print("❌ No valid API key available")
             throw OpenAIError.missingAPIKey
@@ -58,7 +58,39 @@ class OpenAIService {
         // Set a longer timeout
         request.timeoutInterval = 30
         
-        let systemPrompt = """
+        let systemPrompt = customPrompt != nil ? """
+        You are an AI that generates simpler versions of SAT practice questions.
+        Generate one SAT-style multiple choice question that matches these criteria:
+        - Subject: \(subject)
+        - Difficulty: \(difficulty.displayName)
+        - Format: Multiple choice with 4 options
+        - Include detailed explanations for correct and incorrect answers
+        - Custom Prompt: \(customPrompt!)
+
+        Return the response in this exact JSON format:
+        {
+            "question": "The question text here",
+            "options": [
+                "First option text",
+                "Second option text",
+                "Third option text",
+                "Fourth option text"
+            ],
+            "correct_answer": "A",
+            "explanations": {
+                "A": "Explanation for first option",
+                "B": "Explanation for second option",
+                "C": "Explanation for third option",
+                "D": "Explanation for fourth option"
+            }
+        }
+
+        Important formatting rules:
+        1. Options must be a simple array of strings without letter prefixes
+        2. Correct answer must be a single uppercase letter (A, B, C, or D)
+        3. Explanations must use uppercase letters as keys
+        4. All text fields must be plain strings without formatting
+        """ : """
         You are an AI that generates SAT practice questions.
         Generate one SAT-style multiple choice question that matches these criteria:
         - Subject: \(subject)

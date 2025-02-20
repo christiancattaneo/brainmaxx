@@ -121,7 +121,7 @@ struct FeedView: View {
                             // Main Feed
                             ScrollViewReader { scrollProxy in
                                 ScrollView(.vertical, showsIndicators: false) {
-                                    LazyVStack(spacing: 0) {
+                                    LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                                         ForEach(Array(questions.enumerated()).reversed(), id: \.element.id) { index, question in
                                             QuestionView(
                                                 question: question,
@@ -161,19 +161,36 @@ struct FeedView: View {
                                                     if answeredQuestions.count == questions.count {
                                                         showResults = true
                                                     }
+                                                },
+                                                onSimplifiedQuestion: { newQuestion in
+                                                    // Insert the simplified question after the current one
+                                                    if let currentIndex = questions.firstIndex(where: { $0.id == question.id }) {
+                                                        withAnimation(.spring(response: 0.6)) {
+                                                            questions.insert(newQuestion, at: currentIndex)
+                                                            // Update current index to point to the new question
+                                                            self.currentIndex = questions.count - currentIndex - 1
+                                                        }
+                                                        
+                                                        // Scroll to the new question after a brief delay
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                                                scrollProxy.scrollTo(newQuestion.id, anchor: .center)
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             )
-                                            .frame(width: geometry.size.width - 40, height: geometry.size.height - 140)
+                                            .frame(width: geometry.size.width - 40, height: geometry.size.height - 80)
                                             .id(question.id)
                                             .background(Color(.systemBackground))
                                             .clipShape(RoundedRectangle(cornerRadius: 12))
                                             .padding(.horizontal, 20)
-                                            .padding(.vertical, 10)
                                         }
                                     }
+                                    .frame(minHeight: geometry.size.height - 80)
                                 }
                                 .frame(maxWidth: .infinity)
-                                .frame(height: geometry.size.height - 140)
+                                .frame(height: geometry.size.height - 80)
                                 .clipShape(Rectangle())
                                 .scrollDisabled(true)  // Disable manual scrolling
                             }

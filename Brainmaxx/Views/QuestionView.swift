@@ -4,146 +4,311 @@ struct QuestionView: View {
     let question: Question
     @Binding var showQuestion: Bool
     let onAnswered: (Bool) -> Void
+    let onSimplifiedQuestion: ((Question) -> Void)?
     
     @State private var selectedOption: Int?
     @State private var showExplanation = false
     @State private var animateCorrect: Bool = false
     @State private var animateIncorrect: Bool = false
     @State private var shake: Bool = false
+    @State private var isGeneratingSimpler: Bool = false
+    @State private var showLoadingView = false
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    private func generateSimplerQuestion() async {
+        isGeneratingSimpler = true
+        showLoadingView = true
+        
+        do {
+            if let newQuestion = try await OpenAIService.shared.generateQuestion(
+                subject: question.subject,
+                difficulty: question.difficulty,
+                customPrompt: "ask a simpler version of this: \(question.question.displayText)"
+            ) {
+                // Call the completion handler with the new question
+                onSimplifiedQuestion?(newQuestion)
+                
+                // Wait a moment for the animation to complete
+                try? await Task.sleep(for: .seconds(0.6))
+                
+                // Hide the loading view first
+                withAnimation {
+                    showLoadingView = false
+                    isGeneratingSimpler = false
+                }
+                
+                // Wait for loading view to fade out
+                try? await Task.sleep(for: .seconds(0.3))
+                
+                // Then dismiss the explanation overlay
+                withAnimation {
+                    showExplanation = false
+                }
+            }
+        } catch {
+            print("Failed to generate simpler question: \(error)")
+            showLoadingView = false
+            isGeneratingSimpler = false
+        }
+    }
     
     var body: some View {
-        GeometryReader { geometry in
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 16) {
-                    // Question text with math formatting
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Question:")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        MathView(content: question.question.originalMath ?? question.question.displayText)
-                            .frame(minHeight: 60, maxHeight: geometry.size.height * 0.15)
-                    }
-                    .padding(.horizontal)
-                    
-                    // Question image if available
-                    if let imageName = question.images.first {
-                        AsyncImage(url: Bundle.main.url(forResource: imageName, withExtension: nil)) { phase in
-                            switch phase {
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(maxHeight: geometry.size.height * 0.25)
-                            case .failure(_):
-                                Text("Failed to load image")
-                                    .foregroundColor(.secondary)
-                            case .empty:
-                                ProgressView()
-                            @unknown default:
-                                EmptyView()
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    
-                    // Options in 2x2 grid
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Select your answer:")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal)
-                        
-                        LazyVGrid(columns: [
-                            GridItem(.flexible(), spacing: 16),
-                            GridItem(.flexible(), spacing: 16)
-                        ], spacing: 16) {
-                            // Calculate max height needed for any option
-                            let maxHeight = question.question.displayOptions.reduce(CGFloat.zero) { maxHeight, option in
-                                let textHeight = (option as NSString).boundingRect(
-                                    with: CGSize(width: geometry.size.width / 2 - 48, height: .infinity),
-                                    options: .usesLineFragmentOrigin,
-                                    attributes: [.font: UIFont.systemFont(ofSize: 17)],
-                                    context: nil
-                                ).height
-                                return max(maxHeight, textHeight + 32)  // Add padding
-                            }
-                            
-                            ForEach(question.question.displayOptions.indices, id: \.self) { index in
-                                Button {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                        selectedOption = index
-                                        let isCorrect = question.question.displayOptions[index] == question.question.correctAnswers.first
-                                        
-                                        if isCorrect {
-                                            animateCorrect = true
-                                        } else {
-                                            animateIncorrect = true
-                                            shake = true
-                                        }
-                                        
-                                        // Show explanation immediately
-                                        withAnimation(.easeInOut) {
-                                            showExplanation = true
-                                        }
-                                        
-                                        // Notify parent after a delay to allow animation
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                            onAnswered(isCorrect)
-                                        }
-                                    }
-                                } label: {
-                                    VStack {
-                                        // Use MathView for all options to ensure consistent formatting
-                                        MathView(content: cleanMathContent(question.question.displayOptions[index]))
-                                            .frame(height: max(maxHeight, 44))  // Use calculated height with minimum
-                                            .foregroundColor(.white)
-                                            .padding(.horizontal, 16)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .fill(optionColor(for: index))
-                                            .shadow(radius: 2)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 20)
-                                                    .stroke(selectedOption == index ? (question.question.displayOptions[index] == question.question.correctAnswers.first ? Color.green : Color.red) : Color.clear,
-                                                           lineWidth: 4)
-                                            )
-                                    )
-                                    .scaleEffect(selectedOption == index ? (question.question.displayOptions[index] == question.question.correctAnswers.first ? (animateCorrect ? 1.1 : 1.0) : (animateIncorrect ? 0.9 : 1.0)) : 1.0)
-                                }
-                                .disabled(selectedOption != nil)
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    
-                    // Show explanation after answering
-                    if showExplanation {
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack {
-                                Image(systemName: selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                    .foregroundColor(selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? .green : .red)
-                                Text(selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? "Correct!" : "Incorrect")
-                                    .font(.headline)
-                                    .foregroundColor(selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? .green : .red)
-                            }
-                            
-                            Text("Explanation:")
+        ZStack {
+            // Main question content
+            GeometryReader { geometry in
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // Question text with math formatting
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Question:")
                                 .font(.headline)
                                 .foregroundColor(.secondary)
-                            MathView(content: question.explanation.originalMath ?? question.explanation.displayText)
-                                .frame(minHeight: 60, maxHeight: geometry.size.height * 0.2)
+                            MathView(content: question.question.originalMath ?? question.question.displayText)
+                                .frame(minHeight: 60)
                         }
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(10)
-                        .shadow(radius: 2)
                         .padding(.horizontal)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                        .padding(.top, 20)
+                        
+                        // Question image if available
+                        if let imageName = question.images.first {
+                            AsyncImage(url: Bundle.main.url(forResource: imageName, withExtension: nil)) { phase in
+                                switch phase {
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(maxHeight: geometry.size.height * 0.25)
+                                case .failure(_):
+                                    Text("Failed to load image")
+                                        .foregroundColor(.secondary)
+                                case .empty:
+                                    ProgressView()
+                                @unknown default:
+                                    EmptyView()
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        // Options in 2x2 grid
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Select your answer:")
+                                .font(.headline)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal)
+                            
+                            LazyVGrid(columns: [
+                                GridItem(.flexible(), spacing: 16),
+                                GridItem(.flexible(), spacing: 16)
+                            ], spacing: 16) {
+                                // Calculate max height needed for any option
+                                let maxHeight = question.question.displayOptions.reduce(CGFloat.zero) { maxHeight, option in
+                                    let textHeight = (option as NSString).boundingRect(
+                                        with: CGSize(width: geometry.size.width / 2 - 48, height: .infinity),
+                                        options: .usesLineFragmentOrigin,
+                                        attributes: [.font: UIFont.systemFont(ofSize: 17)],
+                                        context: nil
+                                    ).height
+                                    return max(maxHeight, textHeight + 32)  // Add padding
+                                }
+                                
+                                ForEach(question.question.displayOptions.indices, id: \.self) { index in
+                                    Button {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                            selectedOption = index
+                                            let isCorrect = question.question.displayOptions[index] == question.question.correctAnswers.first
+                                            
+                                            if isCorrect {
+                                                animateCorrect = true
+                                            } else {
+                                                animateIncorrect = true
+                                                shake = true
+                                            }
+                                            
+                                            // Show explanation immediately
+                                            withAnimation(.easeInOut) {
+                                                showExplanation = true
+                                            }
+                                            
+                                            // Notify parent after a delay to allow animation
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                                onAnswered(isCorrect)
+                                            }
+                                        }
+                                    } label: {
+                                        VStack {
+                                            MathView(content: cleanMathContent(question.question.displayOptions[index]))
+                                                .frame(height: max(maxHeight, 44))
+                                                .foregroundColor(.white)
+                                                .padding(.horizontal, 16)
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .fill(optionColor(for: index))
+                                                .shadow(radius: 2)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 20)
+                                                        .stroke(selectedOption == index ? (question.question.displayOptions[index] == question.question.correctAnswers.first ? Color.green : Color.red) : Color.clear,
+                                                               lineWidth: 4)
+                                                )
+                                        )
+                                        .scaleEffect(selectedOption == index ? (question.question.displayOptions[index] == question.question.correctAnswers.first ? (animateCorrect ? 1.1 : 1.0) : (animateIncorrect ? 0.9 : 1.0)) : 1.0)
+                                    }
+                                    .disabled(selectedOption != nil)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        // Show explanation after answering
+                        if showExplanation {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    // Incorrect/Correct indicator
+                                    HStack {
+                                        Image(systemName: selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? "checkmark.circle.fill" : "xmark.circle.fill")
+                                            .foregroundColor(selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? .green : .red)
+                                        Text(selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? "Correct!" : "Incorrect")
+                                            .font(.headline)
+                                            .foregroundColor(selectedOption != nil && question.question.displayOptions[selectedOption!] == question.question.correctAnswers.first ? .green : .red)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    // Brainmaxx button - only show for incorrect answers
+                                    if selectedOption != nil && question.question.displayOptions[selectedOption!] != question.question.correctAnswers.first {
+                                        Button {
+                                            Task {
+                                                await generateSimplerQuestion()
+                                            }
+                                        } label: {
+                                            HStack(spacing: 8) {
+                                                if isGeneratingSimpler {
+                                                    ProgressView()
+                                                        .scaleEffect(0.8)
+                                                        .tint(.white)
+                                                }
+                                                Text(isGeneratingSimpler ? "simplifying..." : "brainmaxx")
+                                                    .font(.system(size: 14, weight: .bold))
+                                                    .foregroundStyle(
+                                                        .linearGradient(
+                                                            colors: [
+                                                                .white,
+                                                                .white.opacity(0.8),
+                                                                .white
+                                                            ],
+                                                            startPoint: .leading,
+                                                            endPoint: .trailing
+                                                        )
+                                                    )
+                                            }
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 8)
+                                            .background(
+                                                ZStack {
+                                                    // Animated gradient background
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .fill(
+                                                            LinearGradient(
+                                                                colors: [
+                                                                    Color(red: 0.2, green: 0.4, blue: 1.0),
+                                                                    Color(red: 0.4, green: 0.2, blue: 1.0),
+                                                                    Color(red: 0.8, green: 0.2, blue: 0.8)
+                                                                ],
+                                                                startPoint: .topLeading,
+                                                                endPoint: .bottomTrailing
+                                                            )
+                                                        )
+                                                        .opacity(isGeneratingSimpler ? 0.6 : 0.8)
+                                                    
+                                                    // Shiny overlay
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .fill(
+                                                            LinearGradient(
+                                                                colors: [
+                                                                    .white.opacity(0.5),
+                                                                    .clear,
+                                                                    .white.opacity(0.2),
+                                                                    .clear
+                                                                ],
+                                                                startPoint: .topLeading,
+                                                                endPoint: .bottomTrailing
+                                                            )
+                                                        )
+                                                        .opacity(isGeneratingSimpler ? 0.3 : 1)
+                                                    
+                                                    // Subtle border
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .strokeBorder(
+                                                            LinearGradient(
+                                                                colors: [
+                                                                    .white.opacity(0.6),
+                                                                    .clear,
+                                                                    .white.opacity(0.3)
+                                                                ],
+                                                                startPoint: .topLeading,
+                                                                endPoint: .bottomTrailing
+                                                            ),
+                                                            lineWidth: 1
+                                                        )
+                                                }
+                                            )
+                                            .overlay(
+                                                // Glow effect
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(
+                                                        LinearGradient(
+                                                            colors: [
+                                                                .blue.opacity(0.5),
+                                                                .purple.opacity(0.5)
+                                                            ],
+                                                            startPoint: .leading,
+                                                            endPoint: .trailing
+                                                        ),
+                                                        lineWidth: 2
+                                                    )
+                                                    .blur(radius: 2)
+                                            )
+                                            .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 2)
+                                            .scaleEffect(showExplanation ? 1 : 0.95)
+                                            .opacity(isGeneratingSimpler ? 0.8 : 1)
+                                            .animation(.spring(response: 0.35, dampingFraction: 0.7), value: showExplanation)
+                                            .animation(.easeInOut, value: isGeneratingSimpler)
+                                        }
+                                        .disabled(isGeneratingSimpler)
+                                        .transition(.scale.combined(with: .opacity))
+                                    }
+                                }
+                                
+                                Text("Explanation:")
+                                    .font(.headline)
+                                    .foregroundColor(.secondary)
+                                MathView(content: question.explanation.originalMath ?? question.explanation.displayText)
+                                    .frame(minHeight: 60)
+                            }
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(10)
+                            .shadow(radius: 2)
+                            .padding(.horizontal)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                        }
                     }
+                    .padding(.vertical, 16)
+                    .frame(minHeight: geometry.size.height - 40)
                 }
-                .padding(.vertical)
+            }
+            
+            // Loading overlay
+            if showLoadingView {
+                FuturisticLoadingView(
+                    title: "Generating Simpler Question",
+                    subtitle: "Using AI to break down the concept",
+                    showSparkles: true
+                )
+                .transition(.opacity)
             }
         }
         .onChange(of: animateCorrect) { oldValue, newValue in
@@ -236,7 +401,8 @@ struct QuestionView: View {
             images: []
         ),
         showQuestion: .constant(true),
-        onAnswered: { _ in }
+        onAnswered: { _ in },
+        onSimplifiedQuestion: nil
     )
     .frame(height: 600)
 }
@@ -268,7 +434,8 @@ struct QuestionView: View {
             images: []
         ),
         showQuestion: .constant(true),
-        onAnswered: { _ in }
+        onAnswered: { _ in },
+        onSimplifiedQuestion: nil
     )
     .frame(height: 600)
     .preferredColorScheme(.dark)
@@ -301,7 +468,8 @@ struct QuestionView: View {
             images: ["sample_graph.png"]
         ),
         showQuestion: .constant(true),
-        onAnswered: { _ in }
+        onAnswered: { _ in },
+        onSimplifiedQuestion: nil
     )
     .frame(height: 600)
 }

@@ -170,7 +170,7 @@ struct HomeView: View {
                         }
                         
                         // Subjects Grid or Error
-                        if let error = dataService.loadingError {
+                        if dataService.loadingError != nil {
                             VStack(spacing: 16) {
                                 Image(systemName: "sparkles.rectangle.stack")
                                     .font(.system(size: 40))
