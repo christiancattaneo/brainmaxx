@@ -39,7 +39,7 @@ struct Subject: Identifiable, Codable {
     let name: String
     let description: String
     let iconName: String
-    private let topics: [String: [Question]]
+    private var topics: [String: [Question]]
     private var questionsByDifficulty: [Difficulty: [Question]] = [:]
     
     var totalQuestions: Int {
@@ -57,13 +57,7 @@ struct Subject: Identifiable, Codable {
         description = try container.decode(String.self, forKey: .description)
         iconName = try container.decode(String.self, forKey: .iconName)
         topics = try container.decode([String: [Question]].self, forKey: .topics)
-        
-        // Organize questions by difficulty
-        for questions in topics.values {
-            for question in questions {
-                questionsByDifficulty[question.difficulty, default: []].append(question)
-            }
-        }
+        updateQuestionsByDifficulty()
     }
     
     init(id: String, name: String, description: String, iconName: String, topics: [String: [Question]]) {
@@ -72,8 +66,11 @@ struct Subject: Identifiable, Codable {
         self.description = description
         self.iconName = iconName
         self.topics = topics
-        
-        // Organize questions by difficulty
+        updateQuestionsByDifficulty()
+    }
+    
+    private mutating func updateQuestionsByDifficulty() {
+        questionsByDifficulty.removeAll()
         for questions in topics.values {
             for question in questions {
                 questionsByDifficulty[question.difficulty, default: []].append(question)
@@ -83,6 +80,15 @@ struct Subject: Identifiable, Codable {
     
     func getQuestions(forDifficulty difficulty: Difficulty) -> [Question] {
         return questionsByDifficulty[difficulty] ?? []
+    }
+    
+    mutating func updateTopics(_ newTopics: [String: [Question]]) {
+        self.topics = newTopics
+        updateQuestionsByDifficulty()
+    }
+    
+    func getTopics() -> [String: [Question]] {
+        return topics
     }
 }
 

@@ -727,6 +727,116 @@ struct SampleData {
         ),
     ]
     
+    // MARK: - English Questions by Topic
+    
+    // Grammar Questions
+    private static let grammarQuestions: [Question] = [
+        // Medium Grammar Questions
+        Question(
+            id: "eng-m001",
+            type: "multiple-choice",
+            subject: "English",
+            topic: "Grammar",
+            skill: "Parts of Speech",
+            difficulty: .medium,
+            question: Question.Content(
+                text: "In which of the following options is the word 'light' used as a verb?",
+                originalMath: nil,
+                mathOptions: [
+                    "The light from the lamp was too bright.",
+                    "She prefers light colors for her bedroom walls.",
+                    "They will light the candles at dusk.",
+                    "The feather felt light in her hand."
+                ],
+                correctAnswers: ["They will light the candles at dusk."]
+            ),
+            explanation: Question.Explanation(
+                text: "In this instance, 'light' is used as a verb, meaning to set something to burn or to start a fire. In the other options, 'light' is used as a noun (option A) or as an adjective (options B and D).",
+                originalMath: nil
+            ),
+            images: []
+        ),
+        
+        Question(
+            id: "eng-m002",
+            type: "multiple-choice",
+            subject: "English",
+            topic: "Grammar",
+            skill: "Parallel Structure",
+            difficulty: .medium,
+            question: Question.Content(
+                text: "Which sentence demonstrates correct parallel structure?",
+                originalMath: nil,
+                mathOptions: [
+                    "She enjoys hiking, swimming, and to ride bikes.",
+                    "She enjoys hiking, swimming, and riding bikes.",
+                    "She enjoys to hike, to swim, and riding bikes.",
+                    "She enjoys to hike, swimming, and to ride bikes."
+                ],
+                correctAnswers: ["She enjoys hiking, swimming, and riding bikes."]
+            ),
+            explanation: Question.Explanation(
+                text: "The second option maintains consistent parallel structure by using gerunds (hiking, swimming, riding) throughout the list. The other options mix different verb forms, breaking parallel structure.",
+                originalMath: nil
+            ),
+            images: []
+        )
+    ]
+    
+    // Reading Questions
+    private static let readingQuestions: [Question] = [
+        // Hard Reading Questions
+        Question(
+            id: "eng-h001",
+            type: "multiple-choice",
+            subject: "English",
+            topic: "Reading",
+            skill: "Tone Analysis",
+            difficulty: .hard,
+            question: Question.Content(
+                text: "In the passage below, which word best replaces 'luminous' to alter the tone from one of admiration to one of critique without changing the basic meaning of the sentence? 'The artist's latest piece is a luminous example of creativity and innovation, capturing the attention of all who view it.'",
+                originalMath: nil,
+                mathOptions: [
+                    "pretentious",
+                    "vibrant",
+                    "flashy",
+                    "imaginative"
+                ],
+                correctAnswers: ["pretentious"]
+            ),
+            explanation: Question.Explanation(
+                text: "'Pretentious' adds a tone of critique, suggesting the piece is trying too hard to appear creative and innovative, which alters the tone of the original sentence while keeping the basic meaning related to the piece's attempt to stand out.",
+                originalMath: nil
+            ),
+            images: []
+        ),
+        
+        Question(
+            id: "eng-h002",
+            type: "multiple-choice",
+            subject: "English",
+            topic: "Reading",
+            skill: "Rhetorical Analysis",
+            difficulty: .hard,
+            question: Question.Content(
+                text: "Which rhetorical device is most prominently used in the following sentence? 'The wind whispered through the willows, warning of the approaching storm.'",
+                originalMath: nil,
+                mathOptions: [
+                    "Personification",
+                    "Simile",
+                    "Metaphor",
+                    "Hyperbole"
+                ],
+                correctAnswers: ["Personification"]
+            ),
+            explanation: Question.Explanation(
+                text: "The sentence uses personification by attributing human actions (whispering and warning) to the wind, a non-human entity. This creates a more vivid and dramatic description of the natural phenomenon.",
+                originalMath: nil
+            ),
+            images: []
+        )
+    ]
+    
     // MARK: - Subjects
     static let subjects: [Subject] = [
         Subject(
@@ -741,14 +851,41 @@ struct SampleData {
             ]
         ),
         Subject(
+            id: "chemistry",
+            name: "Chemistry",
+            description: "Chemistry practice questions",
+            iconName: "flame.fill",
+            topics: [
+                "General": [] // Add Chemistry questions here
+            ]
+        ),
+        Subject(
+            id: "history",
+            name: "History",
+            description: "History practice questions",
+            iconName: "clock.fill",
+            topics: [
+                "General": [] // Add History questions here
+            ]
+        ),
+        Subject(
             id: "english",
             name: "English",
             description: "English practice questions",
             iconName: "text.book.closed",
             topics: [
-                "Reading": [], // Add English questions here
-                "Grammar": [],
+                "Reading": readingQuestions,
+                "Grammar": grammarQuestions,
                 "Vocabulary": []
+            ]
+        ),
+        Subject(
+            id: "ai",
+            name: "AI Questions",
+            description: "AI-generated adaptive questions",
+            iconName: "brain.head.profile",
+            topics: [
+                "Generated": [] // Questions will be generated on-demand
             ]
         )
     ]

@@ -4,6 +4,7 @@ struct HomeView: View {
     @StateObject private var dataService = DataService.shared
     @State private var selectedDifficulty: Difficulty = .medium
     @State private var navigationPath = NavigationPath()
+    @State private var showAIDialog = false
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -83,7 +84,7 @@ struct HomeView: View {
                             GridItem(.flexible(), spacing: 16),
                             GridItem(.flexible(), spacing: 16)
                         ], spacing: 16) {
-                            ForEach(dataService.subjects) { subject in
+                            ForEach(dataService.subjects.filter { $0.id != "ai" }) { subject in
                                 NavigationLink {
                                     FeedView(
                                         navigationPath: $navigationPath,
@@ -103,10 +104,24 @@ struct HomeView: View {
                 
                 // Question count
                 if !dataService.subjects.isEmpty {
-                    Text("\(dataService.subjects.reduce(0) { $0 + $1.getQuestions(forDifficulty: selectedDifficulty).count }) questions at \(selectedDifficulty.displayName) difficulty")
+                    Text("\(dataService.subjects.filter { $0.id != "ai" }.reduce(0) { $0 + $1.getQuestions(forDifficulty: selectedDifficulty).count }) questions at \(selectedDifficulty.displayName) difficulty")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.bottom)
+                }
+                
+                // AI Section at bottom
+                if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
+                    NavigationLink {
+                        FeedView(
+                            navigationPath: $navigationPath,
+                            subject: aiSubject,
+                            difficulty: selectedDifficulty
+                        )
+                    } label: {
+                        SubjectCard(subject: aiSubject, difficulty: selectedDifficulty)
+                    }
+                    .padding(.horizontal)
                 }
             }
             .navigationBarHidden(true)
@@ -173,6 +188,49 @@ struct SubjectCard: View {
                         .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                 )
         )
+    }
+}
+
+struct AISubjectCard: View {
+    let subject: Subject
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            // Icon
+            Image(systemName: subject.iconName)
+                .font(.system(size: 24))
+                .foregroundColor(.white)
+                .frame(width: 48, height: 48)
+                .background(Color.white.opacity(0.2))
+                .clipShape(Circle())
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(subject.name)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                
+                Text(subject.description)
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.9))
+                    .lineLimit(1)
+            }
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .foregroundColor(.white.opacity(0.8))
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(
+            LinearGradient(
+                colors: [Color.blue.opacity(0.7), Color.purple.opacity(0.7)],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(radius: 2, x: 0, y: 1)
     }
 }
 

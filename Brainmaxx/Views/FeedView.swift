@@ -46,7 +46,49 @@ struct FeedView: View {
             )
             .padding(.horizontal, 8)
             
-            if questions.isEmpty {
+            if dataService.isGeneratingQuestions {
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                    Text("Generating questions...")
+                        .font(.headline)
+                    Text("Using AI to create new questions for you")
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+                .frame(maxHeight: .infinity)
+            } else if let error = dataService.loadingError {
+                VStack(spacing: 16) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 40))
+                        .foregroundColor(.orange)
+                    Text("Error")
+                        .font(.headline)
+                    Text(error)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    VStack(spacing: 8) {
+                        Button {
+                            Task {
+                                // Reload questions and try again
+                                dataService.reloadQuestions()
+                                questions = await dataService.getQuestionsForCurrentSelection()
+                            }
+                        } label: {
+                            Label("Reload", systemImage: "arrow.clockwise")
+                        }
+                        .buttonStyle(.bordered)
+                        
+                        Button("Return to Home") {
+                            dismiss()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
+                .padding()
+                .frame(maxHeight: .infinity)
+            } else if questions.isEmpty {
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.system(size: 40))
@@ -150,8 +192,11 @@ struct FeedView: View {
             }
         }
         .onAppear {
-            // Load questions when view appears
-            questions = Array(subject.getQuestions(forDifficulty: difficulty))  // Remove .reversed()
+            print("📚 FeedView appeared for subject: \(subject.name) with difficulty: \(difficulty.displayName)")
+            if subject.name.lowercased() == "english" && difficulty == .hard {
+                print("🎯 Hard English selected - will attempt to generate questions if none available")
+            }
+            dataService.selectSubject(subject)
         }
         .onChange(of: currentProgress) { _, progress in
             if progress >= 1.0 {
@@ -161,6 +206,22 @@ struct FeedView: View {
         .fullScreenCover(isPresented: $showResults) {
             if let result = quizResult {
                 ResultsView(navigationPath: $navigationPath, quizResult: result)
+            }
+        }
+        .task {
+            print("🔄 Starting async question loading for \(subject.name) (\(difficulty.displayName))")
+            
+            // Create tasks for loading delay and questions
+            async let questionsLoad = dataService.getQuestionsForCurrentSelection()
+            
+            // Add a minimum loading time of 2 seconds for better UX
+            do {
+                try await Task.sleep(for: .seconds(2))
+                questions = await questionsLoad
+                print("✅ Finished loading questions. Count: \(questions.count)")
+            } catch {
+                print("⚠️ Loading interrupted: \(error.localizedDescription)")
+                questions = await questionsLoad
             }
         }
     }
