@@ -76,31 +76,35 @@ struct FeedView: View {
                                 questions = await dataService.getQuestionsForCurrentSelection()
                             }
                         } label: {
-                            Label("Reload", systemImage: "arrow.clockwise")
+                            Label("Try Again", systemImage: "arrow.clockwise")
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 12)
+                                .background(
+                                    LinearGradient(
+                                        colors: [.blue, .purple.opacity(0.8)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
-                        .buttonStyle(.bordered)
                         
                         Button("Return to Home") {
                             dismiss()
                         }
-                        .buttonStyle(.bordered)
+                        .foregroundColor(.secondary)
                     }
                 }
                 .padding()
                 .frame(maxHeight: .infinity)
             } else if questions.isEmpty {
                 VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 40))
-                        .foregroundColor(.orange)
-                    Text("No questions available")
-                        .font(.headline)
-                    Text("Please try a different difficulty level")
-                        .foregroundColor(.secondary)
-                    Button("Return to Home") {
-                        dismiss()
-                    }
-                    .buttonStyle(.bordered)
+                    FuturisticLoadingView(
+                        title: "Loading Questions",
+                        subtitle: "Finding questions at your level",
+                        showSparkles: false
+                    )
                 }
                 .padding()
                 .frame(maxHeight: .infinity)

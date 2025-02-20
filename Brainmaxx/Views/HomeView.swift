@@ -1,5 +1,54 @@
 import SwiftUI
 
+// Futuristic AI background animation
+struct AIGlowingBackground: View {
+    @State private var animate = false
+    @State private var pulseScale: CGFloat = 1.0
+    
+    var body: some View {
+        ZStack {
+            // Base gradient
+            LinearGradient(
+                colors: [Color.blue.opacity(0.7), Color.purple.opacity(0.7)],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+            
+            // Animated overlay gradients
+            Circle()
+                .fill(Color.white.opacity(0.1))
+                .frame(width: 150, height: 150)
+                .blur(radius: 20)
+                .offset(x: animate ? 100 : -100, y: 0)
+                .animation(
+                    Animation.easeInOut(duration: 3)
+                        .repeatForever(autoreverses: true),
+                    value: animate
+                )
+            
+            // Pulsing circle
+            Circle()
+                .stroke(Color.white.opacity(0.2), lineWidth: 2)
+                .frame(width: 120, height: 120)
+                .scaleEffect(pulseScale)
+                .blur(radius: 5)
+        }
+        .onAppear {
+            // Start the horizontal animation
+            animate = true
+            
+            // Start the pulsing animation
+            withAnimation(
+                Animation
+                    .easeInOut(duration: 2)
+                    .repeatForever(autoreverses: true)
+            ) {
+                pulseScale = 1.2
+            }
+        }
+    }
+}
+
 private struct SafeAreaInsetsKey: EnvironmentKey {
     static var defaultValue: EdgeInsets {
         (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first?.safeAreaInsets.toEdgeInsets() ?? .init()
@@ -26,16 +75,57 @@ struct HomeView: View {
     @State private var selectedAISubject = ""
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     
+    // Animation states for the background
+    @State private var animateGradient1 = false
+    @State private var animateGradient2 = false
+    
     var body: some View {
         NavigationStack(path: $navigationPath) {
             ZStack {
+                // First animated gradient layer
+                LinearGradient(
+                    colors: [
+                        Color.blue.opacity(0.3),
+                        Color.purple.opacity(0.2),
+                        Color.indigo.opacity(0.3)
+                    ],
+                    startPoint: animateGradient1 ? .topLeading : .bottomTrailing,
+                    endPoint: animateGradient1 ? .bottomTrailing : .topLeading
+                )
+                .ignoresSafeArea()
+                .animation(
+                    Animation.easeInOut(duration: 3.0)
+                    .repeatForever(autoreverses: true),
+                    value: animateGradient1
+                )
+                
+                // Second animated gradient layer
+                LinearGradient(
+                    colors: [
+                        Color.purple.opacity(0.2),
+                        Color.blue.opacity(0.2),
+                        Color.cyan.opacity(0.2)
+                    ],
+                    startPoint: animateGradient2 ? .topTrailing : .bottomLeading,
+                    endPoint: animateGradient2 ? .bottomLeading : .topTrailing
+                )
+                .ignoresSafeArea()
+                .animation(
+                    Animation.easeInOut(duration: 4.0)
+                    .repeatForever(autoreverses: true),
+                    value: animateGradient2
+                )
+                .blendMode(.plusLighter)
+                
+                // Main content
                 VStack(spacing: 0) {
                     VStack(spacing: 20) {
                         Spacer()
                         
                         // Title and Description
                         VStack(spacing: 24) {
-                            HStack(spacing: 16) {
+                            // Centered title
+                            VStack(spacing: 16) {
                                 Group {
                                     if let image = UIImage(named: "brain-lightbulb") {
                                         Image(uiImage: image)
@@ -48,13 +138,14 @@ struct HomeView: View {
                                             .foregroundColor(.blue)
                                     }
                                 }
-                                .frame(width: 50, height: 50)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
                                 .shadow(radius: 2)
                                 
                                 Text("brainmaxx")
-                                    .font(.system(size: 36, weight: .bold))
+                                    .font(.system(size: 40, weight: .bold))
                             }
+                            .frame(maxWidth: .infinity)
                             
                             Text("Choose a subject to begin your SAT prep journey")
                                 .font(.subheadline)
@@ -81,26 +172,46 @@ struct HomeView: View {
                         // Subjects Grid or Error
                         if let error = dataService.loadingError {
                             VStack(spacing: 16) {
-                                Image(systemName: "exclamationmark.triangle")
+                                Image(systemName: "sparkles.rectangle.stack")
                                     .font(.system(size: 40))
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(.blue)
+                                    .padding(.bottom, 8)
                                 
-                                Text(error)
+                                Text("No Questions Available")
+                                    .font(.title3.bold())
+                                
+                                Text("Try selecting a different difficulty level")
+                                    .font(.body)
                                     .foregroundColor(.secondary)
                                     .multilineTextAlignment(.center)
+                                    .padding(.horizontal)
                                 
                                 Button {
                                     dataService.reloadQuestions()
                                 } label: {
-                                    Label("Reload", systemImage: "arrow.clockwise")
+                                    HStack {
+                                        Image(systemName: "arrow.clockwise")
+                                        Text("Try Again")
+                                    }
+                                    .padding(.horizontal, 24)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        LinearGradient(
+                                            colors: [.blue, .purple.opacity(0.8)],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .foregroundColor(.white)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
-                                .buttonStyle(.bordered)
+                                .padding(.top, 8)
                             }
                             .padding()
+                            .frame(maxHeight: .infinity)
                         } else if dataService.subjects.isEmpty {
-                            // Loading state
-                            ProgressView("Loading subjects...")
-                                .padding()
+                            FuturisticLoadingView()
+                                .frame(maxHeight: .infinity)
                         } else {
                             ScrollView {
                                 LazyVGrid(columns: [
@@ -130,16 +241,19 @@ struct HomeView: View {
                     if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
                         VStack(spacing: 0) {
                             HStack(spacing: 16) {
-                                // Icon
-                                Image(systemName: aiSubject.iconName)
-                                    .font(.system(size: 24))
-                                    .foregroundColor(.white)
-                                    .frame(width: 48, height: 48)
-                                    .background(Color.white.opacity(0.2))
-                                    .clipShape(Circle())
+                                // Icon with pulsing effect
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.white.opacity(0.2))
+                                        .frame(width: 48, height: 48)
+                                    
+                                    Image(systemName: aiSubject.iconName)
+                                        .font(.system(size: 24))
+                                        .foregroundColor(.white)
+                                }
                                 
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(aiSubject.name)
+                                    Text("AI Questions")
                                         .font(.system(size: 18, weight: .semibold))
                                         .foregroundColor(.white)
                                     
@@ -159,13 +273,7 @@ struct HomeView: View {
                             }
                             .padding(.horizontal, 20)
                             .padding(.vertical, 16)
-                            .background(
-                                LinearGradient(
-                                    colors: [Color.blue.opacity(0.7), Color.purple.opacity(0.7)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
+                            .background(AIGlowingBackground())
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .padding(.horizontal)
                             .padding(.bottom, 8 + (safeAreaInsets.bottom > 0 ? safeAreaInsets.bottom : 16))
@@ -207,6 +315,17 @@ struct HomeView: View {
                     navigationPath = NavigationPath()
                     dataService.selectSubject(nil)
                     selectedDifficulty = .medium
+                }
+            }
+        }
+        .onAppear {
+            // Start the animations with slight delays
+            withAnimation {
+                animateGradient1 = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                withAnimation {
+                    animateGradient2 = true
                 }
             }
         }
@@ -567,7 +686,7 @@ struct AILoadingView: View {
     private let nodeSize: CGFloat = 12
     private let largeNodeSize: CGFloat = 24
     private let pathWidth: CGFloat = 2
-    private let spacing: CGFloat = 40 // Increased for better visibility
+    private let spacing: CGFloat = 32 // Reduced spacing between nodes
     
     private var progressLineHeight: CGFloat {
         // Calculate the exact height needed between nodes
@@ -579,6 +698,23 @@ struct AILoadingView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
+                // Back button
+                HStack {
+                    Button {
+                        dismiss()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                                .fontWeight(.semibold)
+                            Text("Back")
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                    .padding(.horizontal)
+                    Spacer()
+                }
+                .padding(.top, 16)
+                
                 // Header
                 VStack(spacing: 8) {
                     Image(systemName: "sparkles.rectangle.stack")
@@ -593,7 +729,7 @@ struct AILoadingView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
-                .padding(.top, 32)
+                .padding(.top, 16) // Reduced from 32 to compensate for back button
                 
                 // Vertical Path with Nodes
                 ZStack(alignment: .top) {
@@ -609,6 +745,7 @@ struct AILoadingView: View {
                         .frame(width: pathWidth)
                         .frame(height: progressLineHeight)
                         .frame(maxHeight: CGFloat(totalNodes - 1) * spacing, alignment: .bottom)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: progressLineHeight)
                     
                     // Nodes
                     VStack(spacing: spacing) {
@@ -622,12 +759,14 @@ struct AILoadingView: View {
                                     .foregroundColor(.white)
                                     .opacity(currentNodeIndex >= totalNodes - 1 ? 1 : 0)
                             )
+                            .animation(.spring(response: 0.3), value: currentNodeIndex >= totalNodes - 1)
                         
                         // Middle nodes
                         ForEach((1...9).reversed(), id: \.self) { index in
                             Circle()
                                 .fill(currentNodeIndex >= index ? Color.blue : Color.gray.opacity(0.3))
                                 .frame(width: nodeSize, height: nodeSize)
+                                .animation(.spring(response: 0.3).delay(0.05 * Double(index)), value: currentNodeIndex >= index)
                         }
                         
                         // Start node (bottom)
@@ -642,10 +781,10 @@ struct AILoadingView: View {
                     }
                 }
                 .frame(height: CGFloat(totalNodes - 1) * spacing)
-                .frame(maxHeight: geometry.size.height * 0.6)
-                .padding(.vertical, 24)
+                .frame(maxHeight: geometry.size.height * 0.5) // Reduced from 0.6 to 0.5
+                .padding(.vertical, 16) // Reduced from 24 to 16
                 
-                Spacer(minLength: 0)
+                Spacer(minLength: 24) // Added minimum spacing
                 
                 // Status text
                 VStack(spacing: 8) {
@@ -734,6 +873,118 @@ struct AILoadingView: View {
                 await MainActor.run {
                     errorMessage = error.localizedDescription
                 }
+            }
+        }
+    }
+}
+
+// Futuristic Loading Animation
+struct FuturisticLoadingView: View {
+    @State private var rotation: Double = 0
+    @State private var scale: CGFloat = 1
+    @State private var opacity: Double = 0.6
+    @State private var innerRotation: Double = 0
+    @State private var sparkleOffset: CGFloat = 0
+    
+    var title: String = "Generating Questions"
+    var subtitle: String = "Using AI to create your curriculum"
+    var showSparkles: Bool = true
+    
+    var body: some View {
+        ZStack {
+            // Outer rotating ring
+            Circle()
+                .stroke(
+                    LinearGradient(
+                        colors: [.blue.opacity(0.8), .purple.opacity(0.8)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 4
+                )
+                .frame(width: 80, height: 80)
+                .rotationEffect(.degrees(rotation))
+                .scaleEffect(scale)
+                .opacity(opacity)
+            
+            // Inner rotating elements
+            ForEach(0..<3) { index in
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [.blue.opacity(0.6), .purple.opacity(0.6)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 12, height: 12)
+                    .offset(y: -30)
+                    .rotationEffect(.degrees(Double(index) * 120))
+                    .rotationEffect(.degrees(innerRotation))
+            }
+            
+            // Center pulsing dot
+            Circle()
+                .fill(.blue)
+                .frame(width: 16, height: 16)
+                .scaleEffect(scale)
+            
+            if showSparkles {
+                // Floating sparkles
+                ForEach(0..<5) { index in
+                    Image(systemName: "sparkle")
+                        .font(.system(size: CGFloat.random(in: 8...14)))
+                        .foregroundColor(.blue.opacity(0.6))
+                        .offset(
+                            x: CGFloat.random(in: -50...50),
+                            y: -sparkleOffset + CGFloat(index * 20)
+                        )
+                        .animation(
+                            Animation
+                                .easeInOut(duration: Double.random(in: 1.5...2.5))
+                                .repeatForever()
+                                .delay(Double(index) * 0.2),
+                            value: sparkleOffset
+                        )
+                }
+            }
+            
+            // Loading text
+            VStack(spacing: 12) {
+                Spacer()
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.top, 120)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            // Start animations
+            withAnimation(
+                .linear(duration: 3)
+                .repeatForever(autoreverses: false)
+            ) {
+                rotation = 360
+            }
+            
+            withAnimation(
+                .linear(duration: 2)
+                .repeatForever(autoreverses: false)
+            ) {
+                innerRotation = 360
+            }
+            
+            withAnimation(
+                .easeInOut(duration: 1.5)
+                .repeatForever(autoreverses: true)
+            ) {
+                scale = 1.1
+                opacity = 1
+                sparkleOffset = 40
             }
         }
     }
