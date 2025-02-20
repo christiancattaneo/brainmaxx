@@ -295,45 +295,5 @@ struct QuestionView: View {
     .frame(height: 600)
 }
 
-var questionContent: some View {
-    VStack(alignment: .leading, spacing: 16) {
-        Text(question.question.text)
-            .font(.title3)
-            .fontWeight(.medium)
-        
-        if let math = question.question.originalMath {
-            MathExpressionView(expression: math)
-                .padding(.vertical, 8)
-        }
-        
-        VStack(alignment: .leading, spacing: 12) {
-            ForEach(question.question.mathOptions, id: \.self) { option in
-                Button(action: {
-                    selectedAnswer = option
-                }) {
-                    HStack {
-                        Image(systemName: selectedAnswer == option ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(selectedAnswer == option ? .blue : .gray)
-                        
-                        if option.contains("/") || option.contains("^") {
-                            MathExpressionView(expression: option)
-                        } else {
-                            Text(option)
-                        }
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(selectedAnswer == option ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
-                    )
-                }
-                .buttonStyle(PlainButtonStyle())
-            }
-        }
-    }
-    .padding()
-} 
-
 
 
