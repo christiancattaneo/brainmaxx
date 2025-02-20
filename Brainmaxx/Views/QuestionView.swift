@@ -57,6 +57,17 @@ struct QuestionView: View {
                             GridItem(.flexible(), spacing: 16),
                             GridItem(.flexible(), spacing: 16)
                         ], spacing: 16) {
+                            // Calculate max height needed for any option
+                            let maxHeight = question.question.displayOptions.reduce(CGFloat.zero) { maxHeight, option in
+                                let textHeight = (option as NSString).boundingRect(
+                                    with: CGSize(width: geometry.size.width / 2 - 48, height: .infinity),
+                                    options: .usesLineFragmentOrigin,
+                                    attributes: [.font: UIFont.systemFont(ofSize: 17)],
+                                    context: nil
+                                ).height
+                                return max(maxHeight, textHeight + 32)  // Add padding
+                            }
+                            
                             ForEach(question.question.displayOptions.indices, id: \.self) { index in
                                 Button {
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -84,17 +95,17 @@ struct QuestionView: View {
                                     VStack {
                                         // Use MathView for all options to ensure consistent formatting
                                         MathView(content: cleanMathContent(question.question.displayOptions[index]))
-                                            .frame(minHeight: 44)
+                                            .frame(height: max(maxHeight, 44))  // Use calculated height with minimum
                                             .foregroundColor(.white)
+                                            .padding(.horizontal, 16)
                                     }
                                     .frame(maxWidth: .infinity)
-                                    .frame(height: geometry.size.height * 0.1)
                                     .background(
-                                        RoundedRectangle(cornerRadius: 16)
+                                        RoundedRectangle(cornerRadius: 20)
                                             .fill(optionColor(for: index))
                                             .shadow(radius: 2)
                                             .overlay(
-                                                RoundedRectangle(cornerRadius: 16)
+                                                RoundedRectangle(cornerRadius: 20)
                                                     .stroke(selectedOption == index ? (question.question.displayOptions[index] == question.question.correctAnswers.first ? Color.green : Color.red) : Color.clear,
                                                            lineWidth: 4)
                                             )

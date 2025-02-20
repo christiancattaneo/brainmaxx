@@ -15,32 +15,36 @@ struct ProgressHeader: View {
     
     private var estimatedIQ: Int {
         let difficultyBonus: Double = switch difficulty {
-        case .easy: 10
-        case .medium: 25
-        case .hard: 40
+        case .easy: 20
+        case .medium: 35
+        case .hard: 50
         }
-        return 100 + Int((percentageComplete / 100) * difficultyBonus)
+        // Start at 0, max out at 100 + bonus
+        return Int((percentageComplete / 100) * (100 + difficultyBonus))
     }
     
     private var estimatedSalary: Int {
         let difficultyMultiplier: Double = switch difficulty {
-        case .easy: 1.5
-        case .medium: 2.0
-        case .hard: 3.0
+        case .easy: 1.0
+        case .medium: 1.5
+        case .hard: 2.0
         }
-        return 50_000 + Int((percentageComplete / 100) * 450_000 * difficultyMultiplier)
+        // Start at 0, gradually increase to max based on difficulty
+        let maxSalary = 500_000 * difficultyMultiplier
+        return Int((percentageComplete / 100) * maxSalary)
     }
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 24) {
             // Points Counter
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Points")
+            VStack(alignment: .leading, spacing: 6) {
+                Text("POINTS")
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .textCase(.uppercase)
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
                     Text("\(animatedPoints)")
-                        .font(.system(size: 20, weight: .bold))
+                        .font(.system(size: 28, weight: .bold))
                     Text("/\(totalQuestions * 20)")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -48,48 +52,41 @@ struct ProgressHeader: View {
             }
             
             Divider()
-                .frame(height: 24)
+                .frame(height: 40)
             
             // IQ Score
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("IQ")
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .textCase(.uppercase)
                 Text("\(estimatedIQ)")
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 28, weight: .bold))
                     .foregroundColor(.purple)
             }
             
             Divider()
-                .frame(height: 24)
+                .frame(height: 40)
             
             // Salary
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Salary")
+            VStack(alignment: .leading, spacing: 6) {
+                Text("SALARY")
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .textCase(.uppercase)
                 Text(formatCurrency(estimatedSalary))
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 28, weight: .bold))
                     .foregroundColor(.green)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
             }
             
-            Spacer()
-            
-            // Progress Ring
-            ZStack {
-                Circle()
-                    .stroke(Color.secondary.opacity(0.2), lineWidth: 3)
-                Circle()
-                    .trim(from: 0, to: percentageComplete / 100)
-                    .stroke(progressColor, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                Text("\(Int(percentageComplete))%")
-                    .font(.system(size: 10, weight: .bold))
-            }
-            .frame(width: 32, height: 32)
+            Spacer(minLength: 0)
         }
+        .padding(.vertical, 24)
+        .padding(.horizontal, 24)
+        .background(Color(.systemBackground))
+        .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
         .onChange(of: points) { oldValue, newValue in
             if newValue > oldValue {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {

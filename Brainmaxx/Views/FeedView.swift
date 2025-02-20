@@ -118,7 +118,7 @@ struct FeedView: View {
                             ScrollViewReader { scrollProxy in
                                 ScrollView(.vertical, showsIndicators: false) {
                                     LazyVStack(spacing: 0) {
-                                        ForEach(Array(questions.enumerated()), id: \.element.id) { index, question in
+                                        ForEach(Array(questions.enumerated()).reversed(), id: \.element.id) { index, question in
                                             QuestionView(
                                                 question: question,
                                                 showQuestion: .constant(true),
@@ -138,10 +138,10 @@ struct FeedView: View {
                                                         }
                                                         
                                                         // Auto-scroll to next question (if not the last one)
-                                                        if index > 0 {  // Changed from index < questions.count - 1
+                                                        if index > 0 {
                                                             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                                                currentIndex = index - 1  // Changed from index + 1
-                                                                scrollProxy.scrollTo(questions[currentIndex].id, anchor: .bottom)  // Changed anchor to .bottom
+                                                                currentIndex = index - 1
+                                                                scrollProxy.scrollTo(questions[currentIndex].id, anchor: .bottom)
                                                             }
                                                         }
                                                         
@@ -159,18 +159,21 @@ struct FeedView: View {
                                                     }
                                                 }
                                             )
-                                            .frame(width: geometry.size.width - 40, height: geometry.size.height)
+                                            .frame(width: geometry.size.width - 40, height: geometry.size.height - 140)
                                             .id(question.id)
-                                            .overlay(alignment: .bottom) {
-                                                if showScrollIndicator && answeredQuestions.contains(question.id) && index > 0 {
-                                                    ScrollIndicator()
-                                                        .transition(.opacity)
-                                                }
-                                            }
+                                            .background(Color(.systemBackground))
+                                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            .padding(.horizontal, 20)
+                                            .padding(.vertical, 10)
                                         }
                                     }
                                 }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: geometry.size.height - 140)
+                                .clipShape(Rectangle())
+                                .scrollDisabled(true)  // Disable manual scrolling
                             }
+                            .ignoresSafeArea(.keyboard)  // Prevent keyboard from pushing content
                         }
                     }
                 }
@@ -201,6 +204,12 @@ struct FeedView: View {
         .onChange(of: currentProgress) { _, progress in
             if progress >= 1.0 {
                 showResults = true
+            }
+        }
+        // Add navigation path observer
+        .onChange(of: navigationPath) { _, newPath in
+            if newPath.isEmpty {
+                dismiss()
             }
         }
         .fullScreenCover(isPresented: $showResults) {

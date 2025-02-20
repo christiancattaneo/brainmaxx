@@ -31,34 +31,38 @@ struct HomeView: View {
             ZStack {
                 VStack(spacing: 0) {
                     VStack(spacing: 20) {
-                        // Title and Description
-                        HStack(spacing: 16) {
-                            Group {
-                                if let image = UIImage(named: "brain-lightbulb") {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFit()
-                                } else {
-                                    Image(systemName: "sparkles.rectangle.stack")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                            .frame(width: 50, height: 50)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .shadow(radius: 2)
-                            
-                            Text("brainmaxx")
-                                .font(.system(size: 36, weight: .bold))
-                        }
-                        .padding(.top, 16)
+                        Spacer()
                         
-                        Text("Choose a subject to begin your SAT prep journey")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
+                        // Title and Description
+                        VStack(spacing: 24) {
+                            HStack(spacing: 16) {
+                                Group {
+                                    if let image = UIImage(named: "brain-lightbulb") {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFit()
+                                    } else {
+                                        Image(systemName: "sparkles.rectangle.stack")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                                .frame(width: 50, height: 50)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .shadow(radius: 2)
+                                
+                                Text("brainmaxx")
+                                    .font(.system(size: 36, weight: .bold))
+                            }
+                            
+                            Text("Choose a subject to begin your SAT prep journey")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                        }
+                        .padding(.bottom, 32)
                         
                         // Difficulty Selector
                         Picker("Difficulty", selection: $selectedDifficulty) {
@@ -192,12 +196,17 @@ struct HomeView: View {
                 }
             }
             .navigationBarHidden(true)
-            .onReceive(NotificationCenter.default.publisher(for: .returnToHome)) { _ in
-                print("🏠 HomeView: Received returnToHome notification")
-                withAnimation {
+            .onChange(of: navigationPath) { oldPath, newPath in
+                if newPath.isEmpty {
                     dataService.selectSubject(nil)
                     selectedDifficulty = .medium
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .returnToHome)) { _ in
+                withAnimation {
                     navigationPath = NavigationPath()
+                    dataService.selectSubject(nil)
+                    selectedDifficulty = .medium
                 }
             }
         }
@@ -555,40 +564,40 @@ struct AILoadingView: View {
     let dataService: DataService
     
     private let totalNodes = 11 // 1 start + 9 middle + 1 end
-    private let nodeSize: CGFloat = 20
-    private let largeNodeSize: CGFloat = 32
-    private let pathWidth: CGFloat = 4
-    private let spacing: CGFloat = 40
+    private let nodeSize: CGFloat = 12
+    private let largeNodeSize: CGFloat = 24
+    private let pathWidth: CGFloat = 2
+    private let spacing: CGFloat = 40 // Increased for better visibility
+    
+    private var progressLineHeight: CGFloat {
+        // Calculate the exact height needed between nodes
+        let totalSpacing = spacing * CGFloat(totalNodes - 1)
+        let adjustedProgress = CGFloat(currentNodeIndex) / CGFloat(totalNodes - 1)
+        return totalSpacing * adjustedProgress
+    }
     
     var body: some View {
-        ZStack {
-            // Background
-            Color(.systemBackground)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 24) {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
                 // Header
                 VStack(spacing: 8) {
                     Image(systemName: "sparkles.rectangle.stack")
-                        .font(.system(size: 40))
+                        .font(.system(size: 32))
                         .foregroundColor(.blue)
-                        .padding(.bottom, 8)
+                        .padding(.bottom, 4)
                     
                     Text("Generating Your Curriculum")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                        .font(.title3.bold())
                     
                     Text("\(subject.name)")
-                        .font(.title3)
+                        .font(.body)
                         .foregroundColor(.secondary)
                 }
-                .padding(.top, 40)
-                
-                Spacer()
+                .padding(.top, 32)
                 
                 // Vertical Path with Nodes
-                ZStack(alignment: .bottom) {
-                    // Progressive Path
+                ZStack(alignment: .top) {
+                    // Progress line
                     Rectangle()
                         .fill(
                             LinearGradient(
@@ -598,8 +607,8 @@ struct AILoadingView: View {
                             )
                         )
                         .frame(width: pathWidth)
-                        .frame(height: CGFloat(totalNodes - 1) * spacing * pathProgress)
-                        .frame(height: CGFloat(totalNodes - 1) * spacing, alignment: .bottom)
+                        .frame(height: progressLineHeight)
+                        .frame(maxHeight: CGFloat(totalNodes - 1) * spacing, alignment: .bottom)
                     
                     // Nodes
                     VStack(spacing: spacing) {
@@ -609,7 +618,7 @@ struct AILoadingView: View {
                             .frame(width: largeNodeSize, height: largeNodeSize)
                             .overlay(
                                 Image(systemName: "checkmark")
-                                    .font(.system(size: 16, weight: .bold))
+                                    .font(.system(size: 12, weight: .bold))
                                     .foregroundColor(.white)
                                     .opacity(currentNodeIndex >= totalNodes - 1 ? 1 : 0)
                             )
@@ -627,14 +636,16 @@ struct AILoadingView: View {
                             .frame(width: largeNodeSize, height: largeNodeSize)
                             .overlay(
                                 Image(systemName: "sparkles")
-                                    .font(.system(size: 16, weight: .bold))
+                                    .font(.system(size: 12, weight: .bold))
                                     .foregroundColor(.white)
                             )
                     }
                 }
-                .padding(.vertical, 40)
+                .frame(height: CGFloat(totalNodes - 1) * spacing)
+                .frame(maxHeight: geometry.size.height * 0.6)
+                .padding(.vertical, 24)
                 
-                Spacer()
+                Spacer(minLength: 0)
                 
                 // Status text
                 VStack(spacing: 8) {
@@ -665,9 +676,10 @@ struct AILoadingView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 32)
             }
-            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.systemBackground))
         }
         .onAppear {
             generateQuestions()
@@ -708,8 +720,14 @@ struct AILoadingView: View {
                     
                     // Return to home screen after a brief delay
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        NotificationCenter.default.post(name: .returnToHome, object: nil)
-                        dismiss()
+                        // First clear the navigation stack
+                        navigationPath = NavigationPath()
+                        // Then dismiss this view after a brief delay
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation {
+                                dismiss()
+                            }
+                        }
                     }
                 }
             } catch {

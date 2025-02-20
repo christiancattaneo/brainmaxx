@@ -135,13 +135,10 @@ struct ResultsView: View {
                 .buttonStyle(.bordered)
                 
                 Button {
-                    // Post notification to return home
-                    print("🏠 ResultsView: Posting returnToHome notification")
                     NotificationCenter.default.post(name: .returnToHome, object: nil)
-                    // Then dismiss this view
                     dismiss()
                 } label: {
-                    Text("Try Another Subject")
+                    Text("Go Back to Feed")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
