@@ -271,7 +271,7 @@ struct QuizResult {
     
     var percentageCorrect: Double {
         guard totalQuestions > 0 else { return 0 }
-        return Double(score) / Double(totalQuestions) * 100
+        return Double(score * 20) / Double(totalQuestions * 20) * 100
     }
     
     var grade: String {

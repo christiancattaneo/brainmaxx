@@ -69,6 +69,7 @@ extension UIEdgeInsets {
 
 struct HomeView: View {
     @StateObject private var dataService = DataService.shared
+    @StateObject private var audioManager = AudioManager.shared
     @State private var selectedDifficulty: Difficulty = .medium
     @State private var navigationPath = NavigationPath()
     @State private var showAIDialog = false
@@ -135,16 +136,18 @@ struct HomeView: View {
                                         .foregroundColor(.blue)
                                 }
                             }
-                            .frame(width: 60, height: 60)
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                            .frame(width: 80, height: 80)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                             .shadow(radius: 2)
+                            .padding(.top, 32)
                             
                             Text("brainmaxx")
                                 .font(.system(size: 40, weight: .bold))
                         }
                         .frame(maxWidth: .infinity)
+                        .padding(.top, 20)
                         
-                        Text("Choose a subject to begin your SAT prep journey")
+                        Text("Learn and earn!")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
@@ -331,6 +334,8 @@ struct HomeView: View {
             }
         }
         .onAppear {
+            print("🏠 HomeView appeared")
+            
             // Start the animations with slight delays
             withAnimation {
                 animateGradient1 = true
@@ -340,6 +345,10 @@ struct HomeView: View {
                     animateGradient2 = true
                 }
             }
+            
+            // Start playing background music
+            print("🎵 Starting background music from HomeView")
+            audioManager.playBackgroundMusic()
         }
     }
 }

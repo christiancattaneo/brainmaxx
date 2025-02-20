@@ -841,7 +841,7 @@ struct SampleData {
     static let subjects: [Subject] = [
         Subject(
             id: "math",
-            name: "Mathematics",
+            name: "SAT Math",
             description: "Math practice questions",
             iconName: "function",
             topics: [
@@ -870,7 +870,7 @@ struct SampleData {
         ),
         Subject(
             id: "english",
-            name: "English",
+            name: "SAT English",
             description: "English practice questions",
             iconName: "text.book.closed",
             topics: [

@@ -29,49 +29,24 @@ struct ResultsView: View {
     }
     
     private var estimatedIQ: Int {
-        // Base IQ of 100
-        let baseIQ = 100
-        
-        // Maximum deviation from base (realistic range)
-        let maxDeviation = 30
-        
-        // Difficulty impact on maximum potential
-        let difficultyMultiplier: Double = switch quizResult.difficulty {
-            case .easy: 0.7    // Max ~121
-            case .medium: 0.85  // Max ~126
-            case .hard: 1.0    // Max 130
+        let difficultyBonus: Double = switch quizResult.difficulty {
+        case .easy: 20
+        case .medium: 35
+        case .hard: 50
         }
-        
-        // Calculate deviation based on performance and difficulty
-        let deviation = Int((quizResult.percentageCorrect / 100) * Double(maxDeviation) * difficultyMultiplier)
-        
-        // Adjust base IQ up or down based on performance
-        // If score is below 50%, subtract deviation; if above, add deviation
-        let adjustment = quizResult.percentageCorrect >= 50 ? deviation : -deviation
-        
-        // Ensure IQ stays within realistic bounds (70-130)
-        return min(130, max(70, baseIQ + adjustment))
+        // Start at 0, max out at 100 + bonus
+        return Int((quizResult.percentageCorrect / 100) * (100 + difficultyBonus))
     }
     
     private var estimatedSalary: Int {
-        // Base salary (US median entry-level)
-        let baseSalary = 55_000
-        
-        // Maximum additional salary potential
-        let maxAdditionalSalary: Double = switch quizResult.difficulty {
-            case .easy: 45_000    // Max ~$100k
-            case .medium: 95_000   // Max ~$150k
-            case .hard: 195_000    // Max ~$250k
+        let difficultyMultiplier: Double = switch quizResult.difficulty {
+        case .easy: 1.0
+        case .medium: 1.5
+        case .hard: 2.0
         }
-        
-        // Performance multiplier (exponential growth for high performers)
-        let performanceMultiplier = pow(quizResult.percentageCorrect / 100, 1.5)
-        
-        // Calculate additional salary based on performance
-        let additionalSalary = Int(maxAdditionalSalary * performanceMultiplier)
-        
-        // Ensure salary stays within realistic bounds
-        return min(250_000, max(45_000, baseSalary + additionalSalary))
+        // Start at 0, gradually increase to max based on difficulty
+        let maxSalary = 500_000 * difficultyMultiplier
+        return Int((quizResult.percentageCorrect / 100) * maxSalary)
     }
     
     private var shareText: String {
