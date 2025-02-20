@@ -1,0 +1,194 @@
+ # Environment files
+.env
+.env.*
+*.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# API Keys and Secrets
+**/apikey.*
+**/secrets.*
+**/credentials.*
+**/*.pem
+**/*.key
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Xcode
+## User settings
+xcuserdata/
+*.xcuserstate
+project.xcworkspace/
+xcshareddata/
+
+## Build generated
+build/
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Packages/
+Package.pins
+Package.resolved
+*.xcodeproj
+.swiftpm/
+
+# CocoaPods
+Pods/
+*.xcworkspace
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+Carthage/Checkouts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.python-version
+.venv
+venv/
+ENV/
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Cache and temporary files
+.cache/
+tmp/
+temp/
+.tmp/
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv
+*.mp3
+*.wav
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.pdf
+*.psd
+*.ai
+*.sketch
+
+# Generated documentation
+docs/_build/
+doc/_build/
+Documentation/
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+bower_components/
+
+# Distribution directories
+dist/
+build/
+
+# Local development
+*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Misc
+.sass-cache/
+.eslintcache
+.stylelintcache
+.node_repl_history
+.yarn-integrity
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vercel
+.netlify

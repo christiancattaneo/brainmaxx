@@ -11,7 +11,7 @@ import SwiftUI
 struct BrainmaxxApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
         }
     }
 }

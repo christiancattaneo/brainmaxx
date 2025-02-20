@@ -1,0 +1,86 @@
+{
+  "questions": [
+    {
+      "id": "3f5a3602",
+      "text": "What system of linear equations is represented by the lines shown?",
+      "options": [],
+      "images": [
+        "3f5a3602_full_page.png"
+      ],
+      "correct_answer": null,
+      "rationale": null,
+      "difficulty": "Unknown"
+    },
+    {
+      "id": "f224df07",
+      "text": "A cargo helicopter delivers only 100-pound packages and 120-pound packages. For each delivery trip, the helicopter must carry at least 10 packages, and the total weight of the packages can be at most 1,100 pounds. What is the maximum number of 120-pound packages that the helicopter can carry per trip?",
+      "options": [
+        "2",
+        "4",
+        "5"
+      ],
+      "images": [
+        "f224df07_img_1.png",
+        "f224df07_img_2.png",
+        "f224df07_img_3.png",
+        "f224df07_img_4.png",
+        "f224df07_img_5.png",
+        "f224df07_img_6.png",
+        "f224df07_img_7.png",
+        "f224df07_img_8.png",
+        "f224df07_img_9.png",
+        "f224df07_img_10.png"
+      ],
+      "correct_answer": null,
+      "rationale": null,
+      "difficulty": "Unknown"
+    },
+    {
+      "id": "bd9eb2b5",
+      "text": "The function is defined by . For what value of does ?",
+      "options": [],
+      "images": [
+        "bd9eb2b5_full_page.png"
+      ],
+      "correct_answer": null,
+      "rationale": null,
+      "difficulty": "Unknown"
+    },
+    {
+      "id": "0d6ab461",
+      "text": "Gabriella deposits in a savings account at the end of each week. At the beginning of the week of a year there was in that savings account. How much money, in dollars, will be in the account at the end of the week of that year?",
+      "options": [],
+      "images": [
+        "0d6ab461_full_page.png"
+      ],
+      "correct_answer": null,
+      "rationale": null,
+      "difficulty": "Unknown"
+    },
+    {
+      "id": "520c8177",
+      "text": "A veterinarian recommends that each day a certain rabbit should eat calories per pound of the rabbit\u2019s weight, plus an additional calories. Which equation represents this situation, where is the total number of calories the veterinarian recommends the rabbit should eat each day if the rabbit\u2019s weight is pounds?",
+      "options": [],
+      "images": [
+        "520c8177_full_page.png"
+      ],
+      "correct_answer": null,
+      "rationale": null,
+      "difficulty": "Unknown"
+    },
+    {
+      "id": "cb8f449f",
+      "text": "The system of equations above has solution (x, y). What is the value of x ?",
+      "options": [
+        "3",
+        "4"
+      ],
+      "images": [
+        "cb8f449f_full_page.png"
+      ],
+      "correct_answer": null,
+      "rationale": null,
+      "difficulty": "Unknown"
+    }
+  ]
+}

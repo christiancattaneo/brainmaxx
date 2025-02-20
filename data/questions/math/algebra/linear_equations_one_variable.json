@@ -1,0 +1,497 @@
+{
+  "topic": "Linear Equations in One Variable",
+  "questions": [
+    {
+      "id": "097e10f5",
+      "text": "097e10f5 What value of satisfies the equation ?",
+      "options": [],
+      "images": [
+        "images/097e10f5_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "6ac23de7",
+      "text": "6ac23de7 In the equation above, what is the value of x ?",
+      "options": [
+        "25",
+        "24",
+        "16"
+      ],
+      "images": [
+        "images/6ac23de7_img_1.png",
+        "images/6ac23de7_img_2.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "7392dfc1",
+      "text": "7392dfc1 Which of the following is equivalent to ?",
+      "options": [],
+      "images": [
+        "images/7392dfc1_img_1.png",
+        "images/7392dfc1_img_2.png",
+        "images/7392dfc1_img_3.png",
+        "images/7392dfc1_img_4.png",
+        "images/7392dfc1_img_5.png",
+        "images/7392dfc1_img_6.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "93954cfa",
+      "text": "93954cfa One pound of grapes costs $2. At this rate, how many dollars will c pounds of grapes cost?",
+      "options": [],
+      "images": [
+        "images/93954cfa_img_1.png",
+        "images/93954cfa_img_2.png",
+        "images/93954cfa_img_3.png",
+        "images/93954cfa_img_4.png",
+        "images/93954cfa_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "3d04de9c",
+      "text": "3d04de9c A principal used a total of flags that were either blue or yellow for field day. The principal used blue flags. How many yellow flags were used?",
+      "options": [],
+      "images": [
+        "images/3d04de9c_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "60f71697",
+      "text": "60f71697 What value of is the solution to the given equation?",
+      "options": [],
+      "images": [
+        "images/60f71697_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "550b352c",
+      "text": "550b352c How many solutions exist to the equation shown above?",
+      "options": [
+        "None",
+        "Exactly 1",
+        "Exactly 3"
+      ],
+      "images": [
+        "images/550b352c_img_1.png",
+        "images/550b352c_img_2.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "ed18c4f7",
+      "text": "ed18c4f7 Cathy has n CDs. Gerry has 3 more than twice the number of CDs that Cathy has. In terms of n, how many CDs does Gerry have?",
+      "options": [],
+      "images": [
+        "images/ed18c4f7_img_1.png",
+        "images/ed18c4f7_img_2.png",
+        "images/ed18c4f7_img_3.png",
+        "images/ed18c4f7_img_4.png",
+        "images/ed18c4f7_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "12255364",
+      "text": "12255364 A gym charges its members a onetime enrollment fee and a membership fee of per month. If there are no charges other than the enrollment fee and the membership fee, after how many months will a member have been charged a total of at the gym?",
+      "options": [],
+      "images": [
+        "images/12255364_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "d9d83c02",
+      "text": "d9d83c02 For what value of w does ?",
+      "options": [],
+      "images": [
+        "images/d9d83c02_img_1.png",
+        "images/d9d83c02_img_2.png",
+        "images/d9d83c02_img_3.png",
+        "images/d9d83c02_img_4.png",
+        "images/d9d83c02_img_5.png",
+        "images/d9d83c02_img_6.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "7a987ae4",
+      "text": "7a987ae4 If , what is the value of ?",
+      "options": [
+        "24",
+        "49",
+        "50"
+      ],
+      "images": [
+        "images/7a987ae4_img_1.png",
+        "images/7a987ae4_img_2.png",
+        "images/7a987ae4_img_3.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "9ff10b3b",
+      "text": "9ff10b3b If , what is the value of x ?",
+      "options": [],
+      "images": [
+        "images/9ff10b3b_img_1.png",
+        "images/9ff10b3b_img_2.png",
+        "images/9ff10b3b_img_3.png",
+        "images/9ff10b3b_img_4.png",
+        "images/9ff10b3b_img_5.png",
+        "images/9ff10b3b_img_6.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "46f68129",
+      "text": "46f68129 A librarian has 43 books to distribute to a group of children. If he gives each child 2 books, he will have 7 books left over. How many children are in the group?",
+      "options": [
+        "15",
+        "18",
+        "25"
+      ],
+      "images": [
+        "images/46f68129_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "70774aa4",
+      "text": "70774aa4 If , what is the value of ?",
+      "options": [],
+      "images": [
+        "images/70774aa4_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "a9c04a21",
+      "text": "a9c04a21 What is the solution to the equation ?",
+      "options": [
+        "1",
+        "2"
+      ],
+      "images": [
+        "images/a9c04a21_img_1.png",
+        "images/a9c04a21_img_2.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "590f2187",
+      "text": "590f2187 If , what is the value of ?",
+      "options": [],
+      "images": [
+        "images/590f2187_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "59afe8db",
+      "text": "59afe8db What value of is the solution to the given equation?",
+      "options": [],
+      "images": [
+        "images/59afe8db_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "2e98b1df",
+      "text": "2e98b1df On the \ufb01rst day of a semester, a \ufb01lm club has members. Each day after the \ufb01rst day of the semester, new members join the \ufb01lm club. If no members leave the \ufb01lm club, how many total members will the \ufb01lm club have days after the \ufb01rst day of the semester?",
+      "options": [],
+      "images": [
+        "images/2e98b1df_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "40ba6288",
+      "text": "40ba6288 If , what is the value of ?",
+      "options": [],
+      "images": [
+        "images/40ba6288_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "2937ef4f",
+      "text": "2937ef4f Hector used a tool called an auger to remove corn from a storage bin at a constant rate. The bin contained 24,000 bushels of corn when Hector began to use the auger. After 5 hours of using the auger, 19,350 bushels of corn remained in the bin. If the auger continues to remove corn at this rate, what is the total number of hours Hector will have been using the auger when 12,840 bushels of corn remain in the bin?",
+      "options": [
+        "3",
+        "7",
+        "8"
+      ],
+      "images": [
+        "images/2937ef4f_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "b7e6394d",
+      "text": "b7e6394d Alan drives an average of 100 miles each week. His car can travel an average of 25 miles per gallon of gasoline. Alan would like to reduce his weekly expenditure on gasoline by $5. Assuming gasoline costs $4 per gallon, which equation can Alan use to determine how many fewer average miles, m, he should drive each week?",
+      "options": [],
+      "images": [
+        "images/b7e6394d_img_1.png",
+        "images/b7e6394d_img_2.png",
+        "images/b7e6394d_img_3.png",
+        "images/b7e6394d_img_4.png",
+        "images/b7e6394d_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "ae2287e2",
+      "text": "ae2287e2 A certain product costs a company $65 to make. The product is sold by a salesperson who earns a commission that is equal to 20% of the sales price of the product. The profit the company makes for each unit is equal to the sales price minus the combined cost of making the product and the commission. If the sales price of the product is $100, which of the following equations gives the number of units, u, of the product the company sold to make a profit of $6,840 ?",
+      "options": [],
+      "images": [
+        "images/ae2287e2_img_1.png",
+        "images/ae2287e2_img_2.png",
+        "images/ae2287e2_img_3.png",
+        "images/ae2287e2_img_4.png",
+        "images/ae2287e2_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "90095507",
+      "text": "90095507 Townsend Realty Group Investments Property address Purchase price (dollars) Monthly rental price (dollars) Clearwater Lane 128,000 950 Driftwood Drive 176,000 1,310 Edgemont Street 70,000 515 Glenview Street 140,000 1,040 Hamilton Circle 450,000 3,365 The Townsend Realty Group invested in the five different properties listed in the table above. The table shows the amount, in dollars, the company paid for each property and the corresponding monthly rental price, in dollars, the company charges for the property at each of the five locations. Townsend Realty purchased the Glenview Street property and received a 40% discount off the original price along with an additional 20% off the discounted price for purchasing the property in cash. Which of the following best approximates the original price, in dollars, of the Glenview Street property?",
+      "options": [
+        "$350,000",
+        "$291,700",
+        "$233,300"
+      ],
+      "images": [
+        "images/90095507_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "0cb57740",
+      "text": "0cb57740 Each side of a -sided polygon has one of three lengths. The number of sides with length is times the number of sides with length . There are sides with length . Which equation must be true for the value of ?",
+      "options": [],
+      "images": [
+        "images/0cb57740_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "aee9fd2d",
+      "text": "aee9fd2d If , the value of is between which of the following pairs of values?",
+      "options": [
+        "and",
+        "and",
+        "and"
+      ],
+      "images": [
+        "images/aee9fd2d_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "3f8a701b",
+      "text": "3f8a701b The equation , where a and b are constants, has no solutions. Which of the following must be true? I. II. III.",
+      "options": [
+        "None",
+        "I only",
+        "I and II only"
+      ],
+      "images": [
+        "images/3f8a701b_img_1.png",
+        "images/3f8a701b_img_2.png",
+        "images/3f8a701b_img_3.png",
+        "images/3f8a701b_img_4.png",
+        "images/3f8a701b_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "628300a9",
+      "text": "628300a9 A science teacher is preparing the 5 stations of a science laboratory. Each station will have either Experiment A materials or Experiment B materials, but not both. Experiment A requires 6 teaspoons of salt, and Experiment B requires 4 teaspoons of salt. If x is the number of stations that will be set up for Experiment A and the remaining stations will be set up for Experiment B, which of the following expressions represents the total number of teaspoons of salt required?",
+      "options": [],
+      "images": [
+        "images/628300a9_img_1.png",
+        "images/628300a9_img_2.png",
+        "images/628300a9_img_3.png",
+        "images/628300a9_img_4.png",
+        "images/628300a9_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "38bf4e04",
+      "text": "38bf4e04 A factory makes -inch, -inch, and -inch concrete screws. During a certain day, the number of -inch concrete screws that the factory makes is times the number of -inch concrete screws, and the number of -inch concrete screws is . During this day, the factory makes concrete screws total. Which equation represents this situation?",
+      "options": [],
+      "images": [
+        "images/38bf4e04_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "7a5a74a6",
+      "text": "7a5a74a6 If x is the solution to the equation above, what is the value of ?",
+      "options": [],
+      "images": [
+        "images/7a5a74a6_img_1.png",
+        "images/7a5a74a6_img_2.png",
+        "images/7a5a74a6_img_3.png",
+        "images/7a5a74a6_img_4.png",
+        "images/7a5a74a6_img_5.png",
+        "images/7a5a74a6_img_6.png",
+        "images/7a5a74a6_img_7.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "aa85b138",
+      "text": "aa85b138 A tree had a height of 6 feet when it was planted. The equation above can be used to find how many years n it took the tree to reach a height of 14 feet. Which of the following is the best interpretation of the number 2 in this context?",
+      "options": [
+        "The number of years it took the tree to double its height",
+        "The average number of feet that the tree grew per year",
+        "The height, in feet, of the tree when the tree was 1 year old"
+      ],
+      "images": [
+        "images/aa85b138_img_1.png",
+        "images/aa85b138_img_2.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "12ee1edc",
+      "text": "12ee1edc In the given equation, b is a constant. If the equation has no solution, what is the value of b ?",
+      "options": [
+        "2",
+        "4",
+        "6"
+      ],
+      "images": [
+        "images/12ee1edc_img_1.png",
+        "images/12ee1edc_img_2.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "70e29454",
+      "text": "70e29454 In the equation above, a and b are constants. If the equation has infinitely many solutions, what are the values of a and b ?",
+      "options": [
+        "and",
+        "and",
+        "and"
+      ],
+      "images": [
+        "images/70e29454_img_1.png",
+        "images/70e29454_img_2.png",
+        "images/70e29454_img_3.png",
+        "images/70e29454_img_4.png",
+        "images/70e29454_img_5.png",
+        "images/70e29454_img_6.png",
+        "images/70e29454_img_7.png",
+        "images/70e29454_img_8.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "ce314070",
+      "text": "ce314070 If , what is the value of ?",
+      "options": [],
+      "images": [
+        "images/ce314070_img_1.png",
+        "images/ce314070_img_2.png",
+        "images/ce314070_img_3.png",
+        "images/ce314070_img_4.png",
+        "images/ce314070_img_5.png",
+        "images/ce314070_img_6.png",
+        "images/ce314070_img_7.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "36ab4122",
+      "text": "36ab4122 Megan\u2019s regular wage at her job is p dollars per hour for the first 8 hours of work in a day plus 1.5 times her regular hourly wage for work in excess of 8 hours that day. On a given day, Megan worked for 10 hours, and her total earnings for that day were $137.50. What is Megan\u2019s regular hourly wage?",
+      "options": [],
+      "images": [
+        "images/36ab4122_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "5ad9eff0",
+      "text": "5ad9eff0 The width of a rectangular dance floor is w feet. The length of the floor is 6 feet longer than its width. Which of the following expresses the perimeter, in feet, of the dance floor in terms of w ?",
+      "options": [],
+      "images": [
+        "images/5ad9eff0_img_1.png",
+        "images/5ad9eff0_img_2.png",
+        "images/5ad9eff0_img_3.png",
+        "images/5ad9eff0_img_4.png",
+        "images/5ad9eff0_img_5.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "45bba652",
+      "text": "45bba652 If , what is the value of ?",
+      "options": [
+        "2",
+        "5",
+        "7"
+      ],
+      "images": [
+        "images/45bba652_img_1.png",
+        "images/45bba652_img_2.png",
+        "images/45bba652_img_3.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    },
+    {
+      "id": "eafdbbbd",
+      "text": "eafdbbbd What value of is the solution to the given equation?",
+      "options": [],
+      "images": [
+        "images/eafdbbbd_img_1.png"
+      ],
+      "difficulty": "Unknown",
+      "correct_answer": null
+    }
+  ]
+}
