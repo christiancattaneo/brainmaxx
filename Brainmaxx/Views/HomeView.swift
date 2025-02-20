@@ -119,203 +119,204 @@ struct HomeView: View {
                 
                 // Main content
                 VStack(spacing: 0) {
-                    VStack(spacing: 20) {
-                        Spacer()
-                        
-                        // Title and Description
-                        VStack(spacing: 24) {
-                            // Centered title
-                            VStack(spacing: 16) {
-                                Group {
-                                    if let image = UIImage(named: "brain-lightbulb") {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .scaledToFit()
-                                    } else {
-                                        Image(systemName: "sparkles.rectangle.stack")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .foregroundColor(.blue)
-                                    }
+                    // Title and Description
+                    VStack(spacing: 24) {
+                        // Centered title
+                        VStack(spacing: 16) {
+                            Group {
+                                if let image = UIImage(named: "brain-lightbulb") {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFit()
+                                } else {
+                                    Image(systemName: "sparkles.rectangle.stack")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .foregroundColor(.blue)
                                 }
-                                .frame(width: 60, height: 60)
-                                .clipShape(RoundedRectangle(cornerRadius: 14))
-                                .shadow(radius: 2)
-                                
-                                Text("brainmaxx")
-                                    .font(.system(size: 40, weight: .bold))
                             }
-                            .frame(maxWidth: .infinity)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                            .shadow(radius: 2)
                             
-                            Text("Choose a subject to begin your SAT prep journey")
-                                .font(.subheadline)
+                            Text("brainmaxx")
+                                .font(.system(size: 40, weight: .bold))
+                        }
+                        .frame(maxWidth: .infinity)
+                        
+                        Text("Choose a subject to begin your SAT prep journey")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                    }
+                    .padding(.bottom, 32)
+                    
+                    // Difficulty Selector
+                    Picker("Difficulty", selection: $selectedDifficulty) {
+                        ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                            Text(difficulty.displayName)
+                                .tag(difficulty)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .onChange(of: selectedDifficulty) { _, newDifficulty in
+                        print("🎚️ Difficulty changed to: \(newDifficulty.displayName)")
+                        dataService.setDifficulty(newDifficulty)
+                    }
+                    
+                    // Subjects Grid or Error
+                    if dataService.loadingError != nil {
+                        VStack(spacing: 16) {
+                            Image(systemName: "sparkles.rectangle.stack")
+                                .font(.system(size: 40))
+                                .foregroundColor(.blue)
+                                .padding(.bottom, 8)
+                            
+                            Text("No Questions Available")
+                                .font(.title3.bold())
+                            
+                            Text("Try selecting a different difficulty level")
+                                .font(.body)
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal)
-                        }
-                        .padding(.bottom, 32)
-                        
-                        // Difficulty Selector
-                        Picker("Difficulty", selection: $selectedDifficulty) {
-                            ForEach(Difficulty.allCases, id: \.self) { difficulty in
-                                Text(difficulty.displayName)
-                                    .tag(difficulty)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .padding(.horizontal)
-                        .onChange(of: selectedDifficulty) { _, newDifficulty in
-                            print("🎚️ Difficulty changed to: \(newDifficulty.displayName)")
-                            dataService.setDifficulty(newDifficulty)
-                        }
-                        
-                        // Subjects Grid or Error
-                        if dataService.loadingError != nil {
-                            VStack(spacing: 16) {
-                                Image(systemName: "sparkles.rectangle.stack")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.blue)
-                                    .padding(.bottom, 8)
-                                
-                                Text("No Questions Available")
-                                    .font(.title3.bold())
-                                
-                                Text("Try selecting a different difficulty level")
-                                    .font(.body)
-                                    .foregroundColor(.secondary)
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal)
-                                
-                                Button {
-                                    dataService.reloadQuestions()
-                                } label: {
-                                    HStack {
-                                        Image(systemName: "arrow.clockwise")
-                                        Text("Try Again")
-                                    }
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 12)
-                                    .background(
-                                        LinearGradient(
-                                            colors: [.blue, .purple.opacity(0.8)],
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        )
-                                    )
-                                    .foregroundColor(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            
+                            Button {
+                                dataService.reloadQuestions()
+                            } label: {
+                                HStack {
+                                    Image(systemName: "arrow.clockwise")
+                                    Text("Try Again")
                                 }
-                                .padding(.top, 8)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 12)
+                                .background(
+                                    LinearGradient(
+                                        colors: [.blue, .purple.opacity(0.8)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
-                            .padding()
+                            .padding(.top, 8)
+                        }
+                        .padding()
+                        .frame(maxHeight: .infinity)
+                    } else if dataService.subjects.isEmpty {
+                        FuturisticLoadingView()
                             .frame(maxHeight: .infinity)
-                        } else if dataService.subjects.isEmpty {
-                            FuturisticLoadingView()
-                                .frame(maxHeight: .infinity)
-                        } else {
-                            ScrollView {
-                                LazyVGrid(columns: [
-                                    GridItem(.flexible(), spacing: 16),
-                                    GridItem(.flexible(), spacing: 16)
-                                ], spacing: 16) {
-                                    ForEach(dataService.subjects.filter { $0.id != "ai" }) { subject in
-                                        NavigationLink {
-                                            FeedView(
-                                                navigationPath: $navigationPath,
-                                                subject: subject,
-                                                difficulty: selectedDifficulty
-                                            )
-                                        } label: {
-                                            SubjectCard(subject: subject, difficulty: selectedDifficulty)
-                                        }
+                    } else {
+                        ScrollView {
+                            LazyVGrid(columns: [
+                                GridItem(.flexible(), spacing: 16),
+                                GridItem(.flexible(), spacing: 16)
+                            ], spacing: 16) {
+                                ForEach(dataService.subjects.filter { $0.id != "ai" }) { subject in
+                                    NavigationLink {
+                                        FeedView(
+                                            navigationPath: $navigationPath,
+                                            subject: subject,
+                                            difficulty: selectedDifficulty
+                                        )
+                                    } label: {
+                                        SubjectCard(subject: subject, difficulty: selectedDifficulty)
                                     }
                                 }
                             }
                             .padding(20)
+                            .padding(.bottom, 100) // Add padding at bottom for AI section
                         }
-                    }
-                    
-                    Spacer()
-                    
-                    // AI Section at bottom
-                    if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
-                        VStack(spacing: 0) {
-                            HStack(spacing: 16) {
-                                // Icon with pulsing effect
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.white.opacity(0.2))
-                                        .frame(width: 48, height: 48)
-                                    
-                                    Image(systemName: aiSubject.iconName)
-                                        .font(.system(size: 24))
-                                        .foregroundColor(.white)
-                                }
-                                
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("AI Questions")
-                                        .font(.system(size: 18, weight: .semibold))
-                                        .foregroundColor(.white)
-                                    
-                                    Text("Tap to create your own curriculum...")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.9))
-                                }
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .padding(8)
-                                    .background(Color.white.opacity(0.2))
-                                    .clipShape(Circle())
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
-                            .background(AIGlowingBackground())
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .padding(.horizontal)
-                            .padding(.bottom, 8 + (safeAreaInsets.bottom > 0 ? safeAreaInsets.bottom : 16))
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                withAnimation(.spring(response: 0.3)) {
-                                    showAIDialog = true
-                                }
-                            }
-                        }
-                        .edgesIgnoringSafeArea(.bottom)
                     }
                 }
                 
-                // AI Subject Dialog
-                if showAIDialog {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .blur(radius: 2)
-                    
-                    AISubjectDialog(
-                        isPresented: $showAIDialog,
-                        selectedSubject: $selectedAISubject,
-                        difficulty: selectedDifficulty,
-                        navigationPath: $navigationPath
-                    )
-                    .transition(.scale.combined(with: .opacity))
+                // AI Section at bottom
+                if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
+                    VStack {
+                        Spacer()
+                        HStack(spacing: 16) {
+                            // Icon with pulsing effect
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(width: 48, height: 48)
+                                
+                                Image(systemName: aiSubject.iconName)
+                                    .font(.system(size: 24))
+                                    .foregroundColor(.white)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("AI Questions")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundColor(.white)
+                                
+                                Text("Tap to create your own curriculum...")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.white.opacity(0.9))
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.white)
+                                .padding(8)
+                                .background(Color.white.opacity(0.2))
+                                .clipShape(Circle())
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+                        .background(
+                            ZStack {
+                                Color(.systemBackground).opacity(0.1)
+                                AIGlowingBackground()
+                            }
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .padding(.horizontal)
+                        .padding(.bottom, safeAreaInsets.bottom)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.3)) {
+                                showAIDialog = true
+                            }
+                        }
+                    }
+                    .ignoresSafeArea(.all, edges: .bottom)
                 }
             }
-            .navigationBarHidden(true)
-            .onChange(of: navigationPath) { oldPath, newPath in
-                if newPath.isEmpty {
-                    dataService.selectSubject(nil)
-                    selectedDifficulty = .medium
-                }
+            
+            // AI Subject Dialog
+            if showAIDialog {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .blur(radius: 2)
+                
+                AISubjectDialog(
+                    isPresented: $showAIDialog,
+                    selectedSubject: $selectedAISubject,
+                    difficulty: selectedDifficulty,
+                    navigationPath: $navigationPath
+                )
+                .transition(.scale.combined(with: .opacity))
             }
-            .onReceive(NotificationCenter.default.publisher(for: .returnToHome)) { _ in
-                withAnimation {
-                    navigationPath = NavigationPath()
-                    dataService.selectSubject(nil)
-                    selectedDifficulty = .medium
-                }
+        }
+        .navigationBarHidden(true)
+        .onChange(of: navigationPath) { oldPath, newPath in
+            if newPath.isEmpty {
+                dataService.selectSubject(nil)
+                selectedDifficulty = .medium
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .returnToHome)) { _ in
+            withAnimation {
+                navigationPath = NavigationPath()
+                dataService.selectSubject(nil)
+                selectedDifficulty = .medium
             }
         }
         .onAppear {

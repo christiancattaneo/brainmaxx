@@ -54,7 +54,7 @@ struct QuestionView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             // Main question content
             GeometryReader { geometry in
                 ScrollView(showsIndicators: false) {
@@ -308,7 +308,16 @@ struct QuestionView: View {
                     subtitle: "Using AI to break down the concept",
                     showSparkles: true
                 )
-                .transition(.opacity)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color(.systemBackground))
+                        .shadow(radius: 5)
+                )
+                .padding(.top, 20)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .zIndex(1) // Ensure it stays on top
             }
         }
         .onChange(of: animateCorrect) { oldValue, newValue in

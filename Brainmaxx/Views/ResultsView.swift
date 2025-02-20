@@ -8,28 +8,70 @@ struct ResultsView: View {
     
     // Computed properties for estimates
     private var estimatedSATScore: Int {
-        // Base score of 400 + percentage of max points (400)
-        400 + Int((quizResult.percentageCorrect / 100) * 400)
+        // Base score starts at 400 (200 per section)
+        let baseScore = 400
+        
+        // Maximum additional points possible (1600 - 400 = 1200)
+        let maxAdditionalPoints = 1200
+        
+        // Difficulty multiplier
+        let difficultyMultiplier: Double = switch quizResult.difficulty {
+            case .easy: 0.7    // Max ~1240
+            case .medium: 0.85  // Max ~1420
+            case .hard: 1.0    // Max 1600
+        }
+        
+        // Calculate score based on performance and difficulty
+        let additionalPoints = Int((quizResult.percentageCorrect / 100) * Double(maxAdditionalPoints) * difficultyMultiplier)
+        
+        // Ensure score is between 400 and 1600
+        return min(1600, max(400, baseScore + additionalPoints))
     }
     
     private var estimatedIQ: Int {
-        // Base IQ of 100 + bonus based on performance and difficulty
-        let difficultyBonus: Double = switch quizResult.difficulty {
-            case .easy: 10
-            case .medium: 25
-            case .hard: 40
+        // Base IQ of 100
+        let baseIQ = 100
+        
+        // Maximum deviation from base (realistic range)
+        let maxDeviation = 30
+        
+        // Difficulty impact on maximum potential
+        let difficultyMultiplier: Double = switch quizResult.difficulty {
+            case .easy: 0.7    // Max ~121
+            case .medium: 0.85  // Max ~126
+            case .hard: 1.0    // Max 130
         }
-        return 100 + Int((quizResult.percentageCorrect / 100) * difficultyBonus)
+        
+        // Calculate deviation based on performance and difficulty
+        let deviation = Int((quizResult.percentageCorrect / 100) * Double(maxDeviation) * difficultyMultiplier)
+        
+        // Adjust base IQ up or down based on performance
+        // If score is below 50%, subtract deviation; if above, add deviation
+        let adjustment = quizResult.percentageCorrect >= 50 ? deviation : -deviation
+        
+        // Ensure IQ stays within realistic bounds (70-130)
+        return min(130, max(70, baseIQ + adjustment))
     }
     
     private var estimatedSalary: Int {
-        // Base salary of $50,000 + bonus based on performance and difficulty
-        let difficultyMultiplier: Double = switch quizResult.difficulty {
-            case .easy: 1.5
-            case .medium: 2.0
-            case .hard: 3.0
+        // Base salary (US median entry-level)
+        let baseSalary = 55_000
+        
+        // Maximum additional salary potential
+        let maxAdditionalSalary: Double = switch quizResult.difficulty {
+            case .easy: 45_000    // Max ~$100k
+            case .medium: 95_000   // Max ~$150k
+            case .hard: 195_000    // Max ~$250k
         }
-        return 50_000 + Int((quizResult.percentageCorrect / 100) * 450_000 * difficultyMultiplier)
+        
+        // Performance multiplier (exponential growth for high performers)
+        let performanceMultiplier = pow(quizResult.percentageCorrect / 100, 1.5)
+        
+        // Calculate additional salary based on performance
+        let additionalSalary = Int(maxAdditionalSalary * performanceMultiplier)
+        
+        // Ensure salary stays within realistic bounds
+        return min(250_000, max(45_000, baseSalary + additionalSalary))
     }
     
     private var shareText: String {

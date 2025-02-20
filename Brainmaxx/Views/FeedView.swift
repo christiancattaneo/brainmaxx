@@ -39,12 +39,14 @@ struct FeedView: View {
                 difficulty: difficulty
             )
             .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color(.systemBackground))
                     .shadow(radius: 1)
             )
             .padding(.horizontal, 8)
+            .padding(.vertical, 4)
             
             if dataService.isGeneratingQuestions {
                 VStack(spacing: 16) {
@@ -121,76 +123,76 @@ struct FeedView: View {
                             // Main Feed
                             ScrollViewReader { scrollProxy in
                                 ScrollView(.vertical, showsIndicators: false) {
-                                    LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                                        ForEach(Array(questions.enumerated()).reversed(), id: \.element.id) { index, question in
-                                            QuestionView(
-                                                question: question,
-                                                showQuestion: .constant(true),
-                                                onAnswered: { isCorrect in
-                                                    // Mark question as answered
-                                                    answeredQuestions.insert(question.id)
-                                                    
-                                                    // Update points
-                                                    if isCorrect {
-                                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
-                                                            totalPoints += 20
-                                                        }
+                                    VStack(spacing: 0) {
+                                        LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                                            ForEach(Array(questions.enumerated()).reversed(), id: \.element.id) { index, question in
+                                                QuestionView(
+                                                    question: question,
+                                                    showQuestion: .constant(true),
+                                                    onAnswered: { isCorrect in
+                                                        // Mark question as answered
+                                                        answeredQuestions.insert(question.id)
                                                         
-                                                        // Show scroll indicator after correct answer
-                                                        withAnimation {
-                                                            showScrollIndicator = true
-                                                        }
-                                                        
-                                                        // Auto-scroll to next question (if not the last one)
-                                                        if index > 0 {
-                                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                                                currentIndex = index - 1
-                                                                scrollProxy.scrollTo(questions[currentIndex].id, anchor: .bottom)
+                                                        // Update points
+                                                        if isCorrect {
+                                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                                                                totalPoints += 20
                                                             }
-                                                        }
-                                                        
-                                                        // Hide indicator after delay
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            
+                                                            // Show scroll indicator after correct answer
                                                             withAnimation {
-                                                                showScrollIndicator = false
+                                                                showScrollIndicator = true
                                                             }
-                                                        }
-                                                    }
-                                                    
-                                                    // Check if all questions are answered
-                                                    if answeredQuestions.count == questions.count {
-                                                        showResults = true
-                                                    }
-                                                },
-                                                onSimplifiedQuestion: { newQuestion in
-                                                    // Insert the simplified question after the current one
-                                                    if let currentIndex = questions.firstIndex(where: { $0.id == question.id }) {
-                                                        withAnimation(.spring(response: 0.6)) {
-                                                            questions.insert(newQuestion, at: currentIndex)
-                                                            // Update current index to point to the new question
-                                                            self.currentIndex = questions.count - currentIndex - 1
+                                                            
+                                                            // Auto-scroll to next question (if not the last one)
+                                                            if index > 0 {
+                                                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                                                    currentIndex = index - 1
+                                                                    scrollProxy.scrollTo(questions[currentIndex].id, anchor: .bottom)
+                                                                }
+                                                            }
+                                                            
+                                                            // Hide indicator after delay
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                                withAnimation {
+                                                                    showScrollIndicator = false
+                                                                }
+                                                            }
                                                         }
                                                         
-                                                        // Scroll to the new question after a brief delay
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                                                scrollProxy.scrollTo(newQuestion.id, anchor: .center)
+                                                        // Check if all questions are answered
+                                                        if answeredQuestions.count == questions.count {
+                                                            showResults = true
+                                                        }
+                                                    },
+                                                    onSimplifiedQuestion: { newQuestion in
+                                                        // Insert the simplified question after the current one
+                                                        if let currentIndex = questions.firstIndex(where: { $0.id == question.id }) {
+                                                            withAnimation(.spring(response: 0.6)) {
+                                                                questions.insert(newQuestion, at: currentIndex)
+                                                                // Update current index to point to the new question
+                                                                self.currentIndex = questions.count - currentIndex - 1
+                                                            }
+                                                            
+                                                            // Scroll to the new question after a brief delay
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                                                    scrollProxy.scrollTo(newQuestion.id, anchor: .center)
+                                                                }
                                                             }
                                                         }
                                                     }
-                                                }
-                                            )
-                                            .frame(width: geometry.size.width - 40, height: geometry.size.height - 80)
-                                            .id(question.id)
-                                            .background(Color(.systemBackground))
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            .padding(.horizontal, 20)
+                                                )
+                                                .frame(width: geometry.size.width - 40, height: geometry.size.height - 40)
+                                                .id(question.id)
+                                                .padding(.horizontal, 20)
+                                                .padding(.vertical, 8)
+                                            }
                                         }
                                     }
-                                    .frame(minHeight: geometry.size.height - 80)
                                 }
                                 .frame(maxWidth: .infinity)
-                                .frame(height: geometry.size.height - 80)
+                                .frame(height: geometry.size.height - 40)
                                 .clipShape(Rectangle())
                                 .scrollDisabled(true)  // Disable manual scrolling
                             }
@@ -275,14 +277,16 @@ struct ProgressBarView: View {
                 .fill(Color.gray.opacity(0.2))
                 .frame(maxWidth: 32)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.vertical, 32) // Add padding to shorten the bar
             
             // Progress fill
             GeometryReader { geometry in
                 Rectangle()
                     .fill(progressColor(animatedProgress))
-                    .frame(height: max(0, min(geometry.size.height, geometry.size.height * animatedProgress)))
+                    .frame(height: max(0, min(geometry.size.height - 64, (geometry.size.height - 64) * animatedProgress))) // Adjust for padding
                     .frame(maxWidth: 32, maxHeight: .infinity, alignment: .bottom)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding(.vertical, 32) // Match padding with background
                     .allowsHitTesting(false)
             }
             
@@ -298,7 +302,7 @@ struct ProgressBarView: View {
                 
                 Spacer()
             }
-            .padding(.top, 4)
+            .padding(.top, 8)
         }
         .onChange(of: progress) { _, newProgress in
             withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
