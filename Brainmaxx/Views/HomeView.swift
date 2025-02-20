@@ -96,7 +96,7 @@ struct HomeView: View {
                 .ignoresSafeArea()
                 .animation(
                     Animation.easeInOut(duration: 3.0)
-                    .repeatForever(autoreverses: true),
+                        .repeatForever(autoreverses: true),
                     value: animateGradient1
                 )
                 
@@ -113,7 +113,7 @@ struct HomeView: View {
                 .ignoresSafeArea()
                 .animation(
                     Animation.easeInOut(duration: 4.0)
-                    .repeatForever(autoreverses: true),
+                        .repeatForever(autoreverses: true),
                     value: animateGradient2
                 )
                 .blendMode(.plusLighter)
@@ -139,32 +139,26 @@ struct HomeView: View {
                             .frame(width: 80, height: 80)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .shadow(radius: 2)
-                            .padding(.top, 32)
                             
                             Text("brainmaxx")
                                 .font(.system(size: 40, weight: .bold))
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 20)
                         
-                        Text("Learn and earn!")
+                        Text("Learn and Earn! 💸💸")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                     }
-                    .padding(.bottom, 32)
+                    .padding(.top, 60)
+                    .padding(.bottom, 20)
                     
                     // Difficulty Selector
                     Picker("Difficulty", selection: $selectedDifficulty) {
                         ForEach(Difficulty.allCases, id: \.self) { difficulty in
                             Text(difficulty.displayName)
                                 .tag(difficulty)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(difficulty.color)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                     }
                     .pickerStyle(.segmented)
@@ -174,6 +168,7 @@ struct HomeView: View {
                         HapticManager.shared.selectionChanged()
                         dataService.setDifficulty(newDifficulty)
                     }
+                    .padding(.bottom, 20)
                     
                     // Subjects Grid or Error
                     if dataService.loadingError != nil {
@@ -237,15 +232,14 @@ struct HomeView: View {
                                 }
                             }
                             .padding(20)
-                            .padding(.bottom, 100) // Add padding at bottom for AI section
+                            .padding(.bottom, 100)
                         }
                     }
-                }
-                
-                // AI Section at bottom
-                if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
-                    VStack {
-                        Spacer()
+                    
+                    Spacer(minLength: 0)
+                    
+                    // AI Section at bottom
+                    if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
                         HStack(spacing: 16) {
                             // Icon with pulsing effect
                             ZStack {
@@ -300,259 +294,287 @@ struct HomeView: View {
                             }
                         }
                     }
-                    .ignoresSafeArea(.all, edges: .bottom)
+                }
+                .background(Color(.systemBackground))
+                
+                // AI Subject Dialog
+                if showAIDialog {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .blur(radius: 2)
+                    
+                    AISubjectDialog(
+                        isPresented: $showAIDialog,
+                        selectedSubject: $selectedAISubject,
+                        difficulty: selectedDifficulty,
+                        navigationPath: $navigationPath
+                    )
+                    .transition(.scale.combined(with: .opacity))
                 }
             }
-            
-            // AI Subject Dialog
-            if showAIDialog {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                    .blur(radius: 2)
+            .navigationBarHidden(true)
+            .onChange(of: navigationPath) { oldPath, newPath in
+                if newPath.isEmpty {
+                    dataService.selectSubject(nil)
+                    selectedDifficulty = .medium
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .returnToHome)) { _ in
+                withAnimation {
+                    navigationPath = NavigationPath()
+                    dataService.selectSubject(nil)
+                    selectedDifficulty = .medium
+                }
+            }
+            .onAppear {
+                print("🏠 HomeView appeared")
                 
-                AISubjectDialog(
-                    isPresented: $showAIDialog,
-                    selectedSubject: $selectedAISubject,
-                    difficulty: selectedDifficulty,
-                    navigationPath: $navigationPath
-                )
-                .transition(.scale.combined(with: .opacity))
+                // Start the animations with slight delays
+                withAnimation {
+                    animateGradient1 = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        animateGradient2 = true
+                    }
+                }
+                
+                // Start playing background music
+                print("🎵 Starting background music from HomeView")
+                audioManager.playBackgroundMusic()
             }
         }
-        .navigationBarHidden(true)
-        .onChange(of: navigationPath) { oldPath, newPath in
-            if newPath.isEmpty {
-                dataService.selectSubject(nil)
-                selectedDifficulty = .medium
+    }
+}
+
+// Create new CurriculumGenerationView
+struct CurriculumGenerationView: View {
+    let subject: Subject
+    let difficulty: Difficulty
+    @Environment(\.dismiss) private var dismiss
+    @Binding var navigationPath: NavigationPath
+    @StateObject private var dataService = DataService.shared
+    @State private var currentNodeIndex = 0
+    @State private var questions: [Question] = []
+    @State private var errorMessage: String?
+    
+    private let totalNodes = 11
+    private let pathWidth: CGFloat = 2
+    
+    var body: some View {
+        NavigationView {
+            GeometryReader { geometry in
+                Color(.systemBackground)
+                    .ignoresSafeArea()
+                    .overlay {
+                VStack(spacing: 24) {
+                            // Icon and Title
+                            VStack(spacing: 16) {
+                                Image(systemName: subject.iconName)
+                            .font(.system(size: 40))
+                            .foregroundColor(.blue)
+                        
+                                Text("Generating Your Curriculum")
+                                    .font(.title2.bold())
+                        
+                                Text(subject.name)
+                                    .font(.title3)
+                            .foregroundColor(.secondary)
+                            }
+                            .padding(.top, 32)
+                            
+                            Spacer()
+                            
+                            // Progress Nodes
+                            ProgressNodesView(
+                                currentNodeIndex: currentNodeIndex,
+                                totalNodes: totalNodes,
+                                geometry: geometry
+                            )
+                            
+                            Spacer()
+                            
+                            // Status
+                            VStack(spacing: 8) {
+                                if let error = errorMessage {
+                                    Text(error)
+                                        .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                                    
+                                    Button("Try Again") {
+                                        errorMessage = nil
+                                        currentNodeIndex = 0
+                                        questions = []
+                                        generateQuestions()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    
+                                    Button("Cancel") {
+                                        dismiss()
+                                    }
+                                    .foregroundColor(.secondary)
+                                } else {
+                                    Text("Generated \(currentNodeIndex) of 10 questions")
+                                        .font(.headline)
+                                    Text("Using AI to create personalized questions")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            .padding(.bottom, 32)
+                        }
+                        .padding()
+                    }
             }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .returnToHome)) { _ in
-            withAnimation {
-                navigationPath = NavigationPath()
-                dataService.selectSubject(nil)
-                selectedDifficulty = .medium
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
             }
         }
         .onAppear {
-            print("🏠 HomeView appeared")
-            
-            // Start the animations with slight delays
-            withAnimation {
-                animateGradient1 = true
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                withAnimation {
-                    animateGradient2 = true
+            generateQuestions()
+        }
+    }
+    
+    private func generateQuestions() {
+        Task {
+            do {
+                for _ in 0..<10 {
+                    if let question = try await OpenAIService.shared.generateQuestion(
+                        subject: subject.name,
+                        difficulty: difficulty
+                    ) {
+                        await MainActor.run {
+                            questions.append(question)
+                        withAnimation(.spring(response: 0.3)) {
+                                currentNodeIndex += 1
+                            }
+                        }
+                    }
+                }
+                
+                await MainActor.run {
+                    withAnimation(.spring(response: 0.3)) {
+                        currentNodeIndex += 1
+                    }
+                    
+                    var updatedSubject = subject
+                    updatedSubject.updateTopics(["Generated": questions])
+                    dataService.addOrUpdateAISubject(updatedSubject)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        navigationPath = NavigationPath()
+                        dismiss()
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
                 }
             }
-            
-            // Start playing background music
-            print("🎵 Starting background music from HomeView")
-            audioManager.playBackgroundMusic()
         }
     }
 }
 
-// AI Subject Dialog View
-struct AISubjectDialog: View {
-    @Binding var isPresented: Bool
-    @Binding var selectedSubject: String
-    let difficulty: Difficulty
-    @Binding var navigationPath: NavigationPath
-    @State private var subjectInput = ""
-    @State private var isLoading = false
-    @FocusState private var isInputFocused: Bool
-    @Environment(\.dismiss) private var dismiss
-    @State private var showLoadingView = false
-    @State private var selectedSymbol = "sparkles.rectangle.stack"
+// Progress Nodes View Component
+private struct ProgressNodesView: View {
+    let currentNodeIndex: Int
+    let totalNodes: Int
+    let geometry: GeometryProxy
     
-    // Common subject symbols
-    private let subjectSymbols = [
-        "sparkles.rectangle.stack",  // Default AI/Learning (changed from brain.head.profile)
-        "book.fill",              // General education
-        "function",               // Math
-        "textformat",             // Language
-        "atom",                   // Science
-        "globe.americas.fill",    // Geography
-        "clock.fill",             // History
-        "paintpalette.fill",      // Art
-        "music.note",             // Music
-        "figure.run",             // Physical Education
-        "keyboard",               // Computer Science
-        "leaf.fill",              // Biology
-        "flame.fill",             // Chemistry
-        "star.fill",              // Astronomy
-        "books.vertical.fill",    // Literature
-        "wand.and.stars",         // Magic/Special
-    ]
+    private let pathWidth: CGFloat = 2
+    
+    private var sizes: (nodeSize: CGFloat, largeNodeSize: CGFloat, spacing: CGFloat) {
+        let screenHeight = geometry.size.height
+        let baseNodeSize = screenHeight * 0.015
+        let baseLargeNodeSize = baseNodeSize * 2
+        let baseSpacing = screenHeight * 0.04
+        
+        return (
+            nodeSize: max(8, min(baseNodeSize, 16)),
+            largeNodeSize: max(16, min(baseLargeNodeSize, 32)),
+            spacing: max(24, min(baseSpacing, 40))
+        )
+    }
+    
+    private var totalLineHeight: CGFloat {
+        CGFloat(totalNodes - 1) * sizes.spacing
+    }
+    
+    private var progressHeight: CGFloat {
+        if currentNodeIndex >= totalNodes - 1 {
+            return totalLineHeight
+        }
+        return CGFloat(currentNodeIndex) * (totalLineHeight / CGFloat(totalNodes - 1))
+    }
     
     var body: some View {
-        ZStack {
-            if showLoadingView {
-                AILoadingView(
-                    subject: Subject.createAISubject(
-                        id: "ai-\(subjectInput.lowercased().replacingOccurrences(of: " ", with: "-"))",
-                        name: subjectInput,
-                        description: "AI-generated \(subjectInput) curriculum",
-                        iconName: selectedSymbol
-                    ),
-                    difficulty: difficulty,
-                    navigationPath: $navigationPath,
-                    dataService: DataService.shared
-                )
-            } else {
-                VStack(spacing: 24) {
-                    // Header
-                    VStack(spacing: 8) {
-                        Image(systemName: selectedSymbol)
-                            .font(.system(size: 40))
-                            .foregroundColor(.blue)
-                            .padding(.bottom, 8)
-                        
-                        Text("What would you like to learn?")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        Text("Enter any subject and I'll create a personalized curriculum for you")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
+        VStack {
+            ZStack(alignment: .bottom) {
+                // Background line
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: pathWidth)
+                    .frame(height: totalLineHeight)
+                
+                // Animated progress line
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                .blue,
+                                .purple
+                            ],
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                    )
+                    .frame(width: pathWidth)
+                    .frame(height: progressHeight)
+                
+                // Nodes
+                VStack(spacing: sizes.spacing) {
+                    // End node (top)
+                    Circle()
+                        .fill(currentNodeIndex >= totalNodes - 1 ? Color.green : Color.gray.opacity(0.3))
+                        .frame(width: sizes.largeNodeSize, height: sizes.largeNodeSize)
+                        .overlay(
+                            Image(systemName: "checkmark")
+                                .font(.system(size: sizes.largeNodeSize * 0.5, weight: .bold))
+                                .foregroundColor(.white)
+                                .opacity(currentNodeIndex >= totalNodes - 1 ? 1 : 0)
+                        )
+                    
+                    // Middle nodes
+                    ForEach((1...9).reversed(), id: \.self) { index in
+                        Circle()
+                            .fill(currentNodeIndex >= index ? Color.blue : Color.gray.opacity(0.3))
+                            .frame(width: sizes.nodeSize, height: sizes.nodeSize)
                     }
                     
-                    // Subject Input and Symbol Picker
-                    VStack(spacing: 16) {
-                        TextField("", text: $subjectInput)
-                            .placeholder(when: subjectInput.isEmpty) {
-                                Text("e.g. Quantum Physics, World History, Poetry...")
-                                    .foregroundColor(.secondary.opacity(0.8))
-                            }
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .font(.system(size: 18))
-                            .padding(.horizontal)
-                            .focused($isInputFocused)
-                            .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    isInputFocused = true
-                                }
-                            }
-                            .submitLabel(.go)
-                            .onSubmit {
-                                createSubject()
-                            }
-                        
-                        // Symbol Picker
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                ForEach(subjectSymbols, id: \.self) { symbol in
-                                    Image(systemName: symbol)
-                                        .font(.system(size: 24))
-                                        .foregroundColor(selectedSymbol == symbol ? .white : .blue)
-                                        .frame(width: 44, height: 44)
-                                        .background(
-                                            selectedSymbol == symbol ? 
-                                                Color.blue : 
-                                                Color.blue.opacity(0.1)
-                                        )
-                                        .clipShape(Circle())
-                                        .onTapGesture {
-                                            withAnimation(.spring(response: 0.3)) {
-                                                selectedSymbol = symbol
-                                            }
-                                        }
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                        
-                        // Generate Button
-                        Button {
-                            createSubject()
-                        } label: {
-                            HStack {
-                                Image(systemName: "sparkles")
-                                    .font(.system(size: 16, weight: .semibold))
-                                Text("Generate Questions")
-                                    .fontWeight(.semibold)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                LinearGradient(
-                                    colors: [.blue, .purple.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .disabled(subjectInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        .opacity(subjectInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.6 : 1.0)
-                        .padding(.horizontal)
-                    }
-                    
-                    // Cancel button
-                    Button {
-                        withAnimation(.spring(response: 0.3)) {
-                            isPresented = false
-                        }
-                    } label: {
-                        Text("Cancel")
-                            .foregroundColor(.secondary)
-                            .padding(.vertical, 12)
-                    }
+                    // Start node (bottom)
+                    Circle()
+                        .fill(Color.blue)
+                        .frame(width: sizes.largeNodeSize, height: sizes.largeNodeSize)
+                        .overlay(
+                            Image(systemName: "sparkles")
+                                .font(.system(size: sizes.largeNodeSize * 0.5, weight: .bold))
+                                .foregroundColor(.white)
+                        )
                 }
-                .padding(24)
-                .frame(maxWidth: min(UIScreen.main.bounds.width - 48, 400))
-                .background(
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(Color(.systemBackground))
-                        .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
-                )
             }
-        }
-    }
-    
-    private func createSubject() {
-        let trimmedInput = subjectInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedInput.isEmpty else { return }
-        
-        withAnimation(.spring(response: 0.3)) {
-            showLoadingView = true
+            .frame(height: totalLineHeight)
+            .frame(maxHeight: geometry.size.height * 0.4)
+            .animation(.spring(response: 0.6, dampingFraction: 0.8), value: progressHeight)
         }
     }
 }
 
-// Helper view extension for placeholder text
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
-        
-        ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
-        }
-    }
-}
-
-// Navigation Destination
-struct FeedDestination: Hashable {
-    let subject: Subject
-    let difficulty: Difficulty
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(subject.id)
-        hasher.combine(difficulty)
-    }
-    
-    static func == (lhs: FeedDestination, rhs: FeedDestination) -> Bool {
-        lhs.subject.id == rhs.subject.id && lhs.difficulty == rhs.difficulty
-    }
-}
-
+// Subject Card View
 struct SubjectCard: View {
     let subject: Subject
     let difficulty: Difficulty
@@ -691,211 +713,212 @@ struct SparklesOverlay: View {
     }
 }
 
-// AI Loading View
-struct AILoadingView: View {
-    let subject: Subject
+// AI Subject Dialog
+struct AISubjectDialog: View {
+    @Binding var isPresented: Bool
+    @Binding var selectedSubject: String
     let difficulty: Difficulty
     @Binding var navigationPath: NavigationPath
-    @State private var currentNodeIndex = 0
-    @State private var pathProgress: CGFloat = 0
-    @State private var questions: [Question] = []
-    @State private var errorMessage: String?
-    @Environment(\.dismiss) private var dismiss
-    let dataService: DataService
+    @State private var subjectInput = ""
+    @State private var selectedSymbol = "sparkles.rectangle.stack"
+    @State private var showCurriculumGeneration = false
+    @FocusState private var isInputFocused: Bool
     
-    private let totalNodes = 11 // 1 start + 9 middle + 1 end
-    private let nodeSize: CGFloat = 12
-    private let largeNodeSize: CGFloat = 24
-    private let pathWidth: CGFloat = 2
-    private let spacing: CGFloat = 32 // Reduced spacing between nodes
-    
-    private var progressLineHeight: CGFloat {
-        // Calculate the exact height needed between nodes
-        let totalSpacing = spacing * CGFloat(totalNodes - 1)
-        let adjustedProgress = CGFloat(currentNodeIndex) / CGFloat(totalNodes - 1)
-        return totalSpacing * adjustedProgress
-    }
+    // Common subject symbols
+    private let subjectSymbols = [
+        "sparkles.rectangle.stack",  // Default AI/Learning
+        "book.fill",              // General education
+        "function",               // Math
+        "textformat",             // Language
+        "atom",                   // Science
+        "globe.americas.fill",    // Geography
+        "clock.fill",             // History
+        "paintpalette.fill",      // Art
+        "music.note",             // Music
+        "figure.run",             // Physical Education
+        "keyboard",               // Computer Science
+        "leaf.fill",              // Biology
+        "flame.fill",             // Chemistry
+        "star.fill",              // Astronomy
+        "books.vertical.fill",    // Literature
+        "wand.and.stars",         // Magic/Special
+    ]
     
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // Back button
-                HStack {
-                    Button {
-                        dismiss()
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left")
-                                .fontWeight(.semibold)
-                            Text("Back")
+        ZStack {
+            // Background overlay
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+            
+            // Main content
+            GeometryReader { geometry in
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 24) {
+                        // Close button
+                        HStack {
+                            Spacer()
+                            Button {
+                                withAnimation(.spring(response: 0.3)) {
+                                    isPresented = false
+                                }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(.secondary.opacity(0.8))
+                            }
+                            .padding(.bottom, -8)
                         }
-                        .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal)
-                    Spacer()
-                }
-                .padding(.top, 16)
-                
-                // Header
-                VStack(spacing: 8) {
-                    Image(systemName: "sparkles.rectangle.stack")
-                        .font(.system(size: 32))
-                        .foregroundColor(.blue)
-                        .padding(.bottom, 4)
-                    
-                    Text("Generating Your Curriculum")
-                        .font(.title3.bold())
-                    
-                    Text("\(subject.name)")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.top, 16) // Reduced from 32 to compensate for back button
-                
-                // Vertical Path with Nodes
-                ZStack(alignment: .top) {
-                    // Progress line
-                    Rectangle()
-                        .fill(
-                            LinearGradient(
-                                colors: [.blue.opacity(0.3), .purple.opacity(0.3)],
-                                startPoint: .bottom,
-                                endPoint: .top
-                            )
-                        )
-                        .frame(width: pathWidth)
-                        .frame(height: progressLineHeight)
-                        .frame(maxHeight: CGFloat(totalNodes - 1) * spacing, alignment: .bottom)
-                        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: progressLineHeight)
-                    
-                    // Nodes
-                    VStack(spacing: spacing) {
-                        // End node (top)
-                        Circle()
-                            .fill(currentNodeIndex >= totalNodes - 1 ? Color.green : Color.gray.opacity(0.3))
-                            .frame(width: largeNodeSize, height: largeNodeSize)
-                            .overlay(
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .opacity(currentNodeIndex >= totalNodes - 1 ? 1 : 0)
-                            )
-                            .animation(.spring(response: 0.3), value: currentNodeIndex >= totalNodes - 1)
+                        .padding(.horizontal, 20)
                         
-                        // Middle nodes
-                        ForEach((1...9).reversed(), id: \.self) { index in
-                            Circle()
-                                .fill(currentNodeIndex >= index ? Color.blue : Color.gray.opacity(0.3))
-                                .frame(width: nodeSize, height: nodeSize)
-                                .animation(.spring(response: 0.3).delay(0.05 * Double(index)), value: currentNodeIndex >= index)
+                        // Header
+                        VStack(spacing: 8) {
+                            Image(systemName: selectedSymbol)
+                                .font(.system(size: 40))
+                                .foregroundColor(.blue)
+                                .padding(.bottom, 8)
+                            
+                            Text("What would you like to learn?")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            
+                            Text("Enter any subject and I'll create a personalized curriculum for you")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
                         }
                         
-                        // Start node (bottom)
-                        Circle()
-                            .fill(Color.blue)
-                            .frame(width: largeNodeSize, height: largeNodeSize)
-                            .overlay(
+                        // Subject Input and Symbol Picker
+                        VStack(spacing: 16) {
+                            TextField("", text: $subjectInput)
+                                .placeholder(when: subjectInput.isEmpty) {
+                                    Text("e.g. Quantum Physics, World History, Poetry...")
+                                        .foregroundColor(.secondary.opacity(0.8))
+                                }
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .font(.system(size: 18))
+                                .padding(.horizontal)
+                                .focused($isInputFocused)
+                                .onAppear {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        isInputFocused = true
+                                    }
+                                }
+                                .submitLabel(.go)
+                                .onSubmit {
+                                    createSubject()
+                                }
+                            
+                            // Symbol Picker
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(subjectSymbols, id: \.self) { symbol in
+                                        Image(systemName: symbol)
+                                            .font(.system(size: 24))
+                                            .foregroundColor(selectedSymbol == symbol ? .white : .blue)
+                                            .frame(width: 44, height: 44)
+                                            .background(
+                                                selectedSymbol == symbol ? 
+                                                    Color.blue : 
+                                                    Color.blue.opacity(0.1)
+                                            )
+                                            .clipShape(Circle())
+                                            .onTapGesture {
+                                                withAnimation(.spring(response: 0.3)) {
+                                                    selectedSymbol = symbol
+                                                }
+                                            }
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
+                            
+                            // Generate Button
+                            Button {
+                                createSubject()
+                            } label: {
+                                HStack {
                                 Image(systemName: "sparkles")
-                                    .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.white)
-                            )
-                    }
-                }
-                .frame(height: CGFloat(totalNodes - 1) * spacing)
-                .frame(maxHeight: geometry.size.height * 0.5) // Reduced from 0.6 to 0.5
-                .padding(.vertical, 16) // Reduced from 24 to 16
-                
-                Spacer(minLength: 24) // Added minimum spacing
-                
-                // Status text
-                VStack(spacing: 8) {
-                    if let error = errorMessage {
-                        Text(error)
-                            .foregroundColor(.red)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                        
-                        Button("Try Again") {
-                            errorMessage = nil
-                            currentNodeIndex = 0
-                            questions = []
-                            generateQuestions()
+                                        .font(.system(size: 16, weight: .semibold))
+                                    Text("Generate Questions")
+                                        .fontWeight(.semibold)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    LinearGradient(
+                                        colors: [.blue, .purple.opacity(0.8)],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .foregroundColor(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
+                            .disabled(subjectInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                            .opacity(subjectInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.6 : 1.0)
+                            .padding(.horizontal)
                         }
-                        .buttonStyle(.bordered)
-                        
-                        Button("Cancel") {
-                            dismiss()
-                        }
-                        .foregroundColor(.secondary)
-                        .padding(.top, 8)
-                    } else {
-                        Text("Generated \(currentNodeIndex) of 10 questions")
-                            .font(.headline)
-                        Text("Using AI to create personalized questions")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
                     }
+                    .padding(24)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
+                    .frame(maxWidth: min(geometry.size.width - 48, 400))
+                    .frame(height: min(max(geometry.size.height * 0.7, 400), 600))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 }
-                .padding(.bottom, 32)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.systemBackground))
         }
-        .onAppear {
-            generateQuestions()
+        .fullScreenCover(isPresented: $showCurriculumGeneration) {
+            CurriculumGenerationView(
+                subject: Subject.createAISubject(
+                    id: "ai-\(subjectInput.lowercased().replacingOccurrences(of: " ", with: "-"))",
+                    name: subjectInput,
+                    description: "AI-generated \(subjectInput) curriculum",
+                    iconName: selectedSymbol
+                ),
+                difficulty: difficulty,
+                navigationPath: $navigationPath
+            )
         }
     }
     
-    private func generateQuestions() {
-        Task {
-            do {
-                for _ in 0..<10 {
-                    if let question = try await OpenAIService.shared.generateQuestion(
-                        subject: subject.name,
-                        difficulty: difficulty
-                    ) {
-                        await MainActor.run {
-                            questions.append(question)
-                            withAnimation(.spring(response: 0.3)) {
-                                currentNodeIndex += 1
-                                pathProgress = CGFloat(currentNodeIndex) / CGFloat(totalNodes - 1)
-                            }
-                        }
-                    }
-                }
-                
-                // All questions generated successfully
-                await MainActor.run {
-                    withAnimation(.spring(response: 0.3)) {
-                        currentNodeIndex += 1 // Move to final node
-                        pathProgress = 1.0
-                    }
-                    
-                    // Create updated subject with generated questions
-                    var updatedSubject = subject
-                    updatedSubject.updateTopics(["Generated": questions])
-                    
-                    // Save to DataService
-                    dataService.addOrUpdateAISubject(updatedSubject)
-                    
-                    // Return to home screen after a brief delay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        // First clear the navigation stack
-                        navigationPath = NavigationPath()
-                        // Then dismiss this view after a brief delay
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            withAnimation {
-                                dismiss()
-                            }
-                        }
-                    }
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                }
-            }
+    private func createSubject() {
+        let trimmedInput = subjectInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedInput.isEmpty else { return }
+        
+        showCurriculumGeneration = true
+    }
+}
+
+// Helper view extension for placeholder text
+extension View {
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: () -> Content) -> some View {
+        
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
         }
+    }
+}
+
+// Navigation Destination
+struct FeedDestination: Hashable {
+    let subject: Subject
+    let difficulty: Difficulty
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(subject.id)
+        hasher.combine(difficulty)
+    }
+    
+    static func == (lhs: FeedDestination, rhs: FeedDestination) -> Bool {
+        lhs.subject.id == rhs.subject.id && lhs.difficulty == rhs.difficulty
     }
 }
 
