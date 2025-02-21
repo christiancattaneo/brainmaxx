@@ -111,7 +111,7 @@ struct SampleData {
                     "20",
                     "15"
                 ],
-                correctAnswers: ["18"]
+                correctAnswers: ["24"]
             ),
             explanation: Question.Explanation(
                 text: "Substitute x = 3: 3³ - 3 = 27 - 3 = 18",
@@ -196,23 +196,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "The area of a triangle is 24, and its base is 6. What is its height?",
-                originalMath: "(1/2) × base × height = 24",
+                originalMath: "<math>\\text{Given: Area} = 24, \\text{ base} = 6 \\\\ \\frac{1}{2} \\times \\text{base} \\times \\text{height} = 24</math>",
                 mathOptions: [
-                    "4",
-                    "6",
-                    "8",
-                    "10"
+                    "<math>4</math>",
+                    "<math>6</math>",
+                    "<math>8</math>",
+                    "<math>10</math>"
                 ],
-                correctAnswers: ["8"]
+                correctAnswers: ["<math>8</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Use the area formula: (1/2) × base × height = 24. Solving for height: (1/2) × 6 × h = 24, so 3h = 24, therefore h = 8",
-                originalMath: """
-                (1/2) × 6 × h = 24
-                3h = 24
-                h = 24/3
-                h = 8
-                """
+                originalMath: "<math>\\begin{align*} \\frac{1}{2} \\times 6 \\times h &= 24 \\\\ 3h &= 24 \\\\ h &= \\frac{24}{3} \\\\ h &= 8 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -226,23 +221,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "What is the value of (2x + 3)(x - 4) when x = 5?",
-                originalMath: "(2x + 3)(x - 4) when x = 5",
+                originalMath: "<math>(2x + 3)(x - 4) \\text{ when } x = 5</math>",
                 mathOptions: [
-                    "3",
-                    "7",
-                    "9",
-                    "13"
+                    "<math>3</math>",
+                    "<math>7</math>",
+                    "<math>9</math>",
+                    "<math>13</math>"
                 ],
-                correctAnswers: ["13"]
+                correctAnswers: ["<math>13</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Substitute x = 5: (2(5) + 3)(5 - 4) = (10 + 3)(1) = 13",
-                originalMath: """
-                (2(5) + 3)(5 - 4)
-                = (10 + 3)(1)
-                = 13 × 1
-                = 13
-                """
+                originalMath: "<math>\\begin{align*} (2(5) + 3)(5 - 4) &= (10 + 3)(1) \\\\ &= 13 \\times 1 \\\\ &= 13 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -255,23 +245,19 @@ struct SampleData {
             skill: "Quadratic equations",
             difficulty: .medium,
             question: Question.Content(
-                text: "Solve for x: x² - 9 = 0",
-                originalMath: "x^2 - 9 = 0",
+                text: "Solve for x:",
+                originalMath: "<math>x^2 - 9 = 0</math>",
                 mathOptions: [
-                    "3",
-                    "-3",
-                    "±3",
-                    "9"
+                    "<math>3</math>",
+                    "<math>-3</math>",
+                    "<math>\\pm3</math>",
+                    "<math>9</math>"
                 ],
-                correctAnswers: ["±3"]
+                correctAnswers: ["<math>\\pm3</math>"]
             ),
             explanation: Question.Explanation(
-                text: "Factor: (x - 3)(x + 3) = 0. Solving for x, we get x = 3 or x = -3",
-                originalMath: """
-                x^2 - 9 = 0
-                (x - 3)(x + 3) = 0
-                x = ±3
-                """
+                text: "Factor the equation into (x - 3)(x + 3) = 0. Then solve for x.",
+                originalMath: "<math>\\begin{align*} x^2 - 9 &= 0 \\\\ (x - 3)(x + 3) &= 0 \\\\ x &= \\pm3 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -285,23 +271,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "What is the sum of the solutions to x² - 5x + 6 = 0?",
-                originalMath: "x^2 - 5x + 6 = 0",
+                originalMath: "<math>x^2 - 5x + 6 = 0</math>",
                 mathOptions: [
-                    "2",
-                    "3",
-                    "5",
-                    "6"
+                    "<math>2</math>",
+                    "<math>3</math>",
+                    "<math>5</math>",
+                    "<math>6</math>"
                 ],
-                correctAnswers: ["5"]
+                correctAnswers: ["<math>5</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Factor: (x - 2)(x - 3) = 0. Solutions: x = 2, x = 3. Sum: 2 + 3 = 5",
-                originalMath: """
-                x^2 - 5x + 6 = 0
-                (x - 2)(x - 3) = 0
-                x = 2 or x = 3
-                Sum = 2 + 3 = 5
-                """
+                originalMath: "<math>\\begin{align*} x^2 - 5x + 6 &= 0 \\\\ (x - 2)(x - 3) &= 0 \\\\ x &= 2 \\text{ or } x = 3 \\\\ \\text{Sum} &= 2 + 3 = 5 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -315,28 +296,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "If 4x + 2y = 10 and 2x - y = 3, what is x?",
-                originalMath: """
-                4x + 2y = 10
-                2x - y = 3
-                """,
+                originalMath: "<math>\\begin{align*} 4x + 2y &= 10 \\\\ 2x - y &= 3 \\end{align*}</math>",
                 mathOptions: [
-                    "1",
-                    "2",
-                    "3",
-                    "4"
+                    "<math>1</math>",
+                    "<math>2</math>",
+                    "<math>3</math>",
+                    "<math>4</math>"
                 ],
-                correctAnswers: ["2"]
+                correctAnswers: ["<math>2</math>"]
             ),
             explanation: Question.Explanation(
                 text: "From second equation: y = 2x - 3. Substitute into first equation: 4x + 2(2x - 3) = 10. Solve: 4x + 4x - 6 = 10, 8x = 16, x = 2",
-                originalMath: """
-                y = 2x - 3
-                4x + 2(2x - 3) = 10
-                4x + 4x - 6 = 10
-                8x - 6 = 10
-                8x = 16
-                x = 2
-                """
+                originalMath: "<math>\\begin{align*} y &= 2x - 3 \\\\ 4x + 2(2x - 3) &= 10 \\\\ 4x + 4x - 6 &= 10 \\\\ 8x - 6 &= 10 \\\\ 8x &= 16 \\\\ x &= 2 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -350,23 +321,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "The average of 4 numbers is 10. If three of the numbers are 8, 12, and 9, what is the fourth number?",
-                originalMath: "(8 + 12 + 9 + x)/4 = 10",
+                originalMath: "<math>\\frac{8 + 12 + 9 + x}{4} = 10</math>",
                 mathOptions: [
-                    "10",
-                    "11",
-                    "12",
-                    "13"
+                    "<math>10</math>",
+                    "<math>11</math>",
+                    "<math>12</math>",
+                    "<math>13</math>"
                 ],
-                correctAnswers: ["11"]
+                correctAnswers: ["<math>11</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Total sum = 4 × 10 = 40. Given sum = 8 + 12 + 9 = 29. Fourth number = 40 - 29 = 11",
-                originalMath: """
-                4 × 10 = 40 (total sum)
-                8 + 12 + 9 = 29 (given sum)
-                x = 40 - 29
-                x = 11
-                """
+                originalMath: "<math>\\begin{align*} 4 \\times 10 &= 40 \\text{ (total sum)} \\\\ 8 + 12 + 9 &= 29 \\text{ (given sum)} \\\\ x &= 40 - 29 \\\\ x &= 11 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -380,22 +346,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "What is the slope of the line passing through (2, 3) and (6, 7)?",
-                originalMath: "m = (y2 - y1)/(x2 - x1)",
+                originalMath: "<math>m = \\frac{y_2 - y_1}{x_2 - x_1}</math>",
                 mathOptions: [
-                    "1",
-                    "2",
-                    "1.5",
-                    "0.5"
+                    "<math>1</math>",
+                    "<math>2</math>",
+                    "<math>1.5</math>",
+                    "<math>0.5</math>"
                 ],
-                correctAnswers: ["1"]
+                correctAnswers: ["<math>1</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Use slope formula: m = (y₂ - y₁)/(x₂ - x₁) = (7 - 3)/(6 - 2) = 4/4 = 1",
-                originalMath: """
-                m = (7 - 3)/(6 - 2)
-                = 4/4
-                = 1
-                """
+                originalMath: "<math>\\begin{align*} m &= \\frac{y_2 - y_1}{x_2 - x_1} \\\\ &= \\frac{7 - 3}{6 - 2} \\\\ &= \\frac{4}{4} \\\\ &= 1 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -409,22 +371,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "What is 5/8 + 3/4?",
-                originalMath: "(5/8) + (3/4)",
+                originalMath: "<math>\\frac{5}{8} + \\frac{3}{4}</math>",
                 mathOptions: [
-                    "(1/2)",
-                    "(9/8)",
-                    "(11/8)",
-                    "(13/8)"
+                    "<math>\\frac{1}{2}</math>",
+                    "<math>\\frac{9}{8}</math>",
+                    "<math>\\frac{11}{8}</math>",
+                    "<math>\\frac{13}{8}</math>"
                 ],
-                correctAnswers: ["(11/8)"]
+                correctAnswers: ["<math>\\frac{11}{8}</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Convert 3/4 to 6/8, then add: 5/8 + 6/8 = 11/8",
-                originalMath: """
-                (3/4) = (6/8)
-                (5/8) + (6/8)
-                = (11/8)
-                """
+                originalMath: "<math>\\begin{align*} \\frac{3}{4} &= \\frac{6}{8} \\\\ \\frac{5}{8} + \\frac{6}{8} &= \\frac{11}{8} \\end{align*}</math>"
             ),
             images: []
         ),
@@ -652,22 +610,18 @@ struct SampleData {
             difficulty: .easy,
             question: Question.Content(
                 text: "If a square has a perimeter of 24, what is its side length?",
-                originalMath: "4s = 24",
+                originalMath: "<math>\\text{If } 4s = 24\\text{, what is } s\\text{?}</math>",
                 mathOptions: [
-                    "4",
-                    "6",
-                    "8",
-                    "12"
+                    "<math>4</math>",
+                    "<math>6</math>",
+                    "<math>8</math>",
+                    "<math>12</math>"
                 ],
-                correctAnswers: ["6"]
+                correctAnswers: ["<math>6</math>"]
             ),
             explanation: Question.Explanation(
                 text: "The perimeter of a square is 4s. Solve: 4s = 24, so s = 6",
-                originalMath: """
-                4s = 24
-                s = 24/4
-                s = 6
-                """
+                originalMath: "<math>\\begin{align*} \\text{Perimeter} &= 4s \\\\ 4s &= 24 \\\\ s &= \\frac{24}{4} \\\\ s &= 6 \\end{align*}</math>"
             ),
             images: []
         ),
@@ -685,13 +639,18 @@ struct SampleData {
             difficulty: .easy,
             question: Question.Content(
                 text: "What is the median of the set {2, 5, 7, 8, 10}?",
-                originalMath: "\\{2, 5, 7, 8, 10\\}",
-                mathOptions: ["5", "6", "7", "8"],
-                correctAnswers: ["7"]
+                originalMath: "<math>\\text{What is the median of the set } {2, 5, 7, 8, 10}\\text{?}</math>",
+                mathOptions: [
+                    "<math>5</math>",
+                    "<math>6</math>",
+                    "<math>7</math>",
+                    "<math>8</math>"
+                ],
+                correctAnswers: ["<math>7</math>"]
             ),
             explanation: Question.Explanation(
                 text: "The median is the middle number in an ordered list: {2, 5, 7, 8, 10} → 7",
-                originalMath: nil
+                originalMath: "<math>\\text{The median is the middle number: } {2, 5, \\color{blue}{7}, 8, 10}</math>"
             ),
             images: []
         ),
@@ -705,23 +664,18 @@ struct SampleData {
             difficulty: .medium,
             question: Question.Content(
                 text: "The average of 4 numbers is 10. If three of the numbers are 8, 12, and 9, what is the fourth number?",
-                originalMath: "(8 + 12 + 9 + x)/4 = 10",
+                originalMath: "<math>\\frac{8 + 12 + 9 + x}{4} = 10</math>",
                 mathOptions: [
-                    "10",
-                    "11",
-                    "12",
-                    "13"
+                    "<math>10</math>",
+                    "<math>11</math>",
+                    "<math>12</math>",
+                    "<math>13</math>"
                 ],
-                correctAnswers: ["11"]
+                correctAnswers: ["<math>11</math>"]
             ),
             explanation: Question.Explanation(
                 text: "Total sum = 4 × 10 = 40. Given sum = 8 + 12 + 9 = 29. Fourth number = 40 - 29 = 11",
-                originalMath: """
-                4 × 10 = 40 (total sum)
-                8 + 12 + 9 = 29 (given sum)
-                x = 40 - 29
-                x = 11
-                """
+                originalMath: "<math>\\begin{align*} 4 \\times 10 &= 40 \\text{ (total sum)} \\\\ 8 + 12 + 9 &= 29 \\text{ (given sum)} \\\\ x &= 40 - 29 \\\\ x &= 11 \\end{align*}</math>"
             ),
             images: []
         ),

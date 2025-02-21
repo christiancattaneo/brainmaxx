@@ -11,6 +11,7 @@ struct FeedView: View {
     @State private var showResults = false
     @State private var currentIndex = 0
     @State private var answeredQuestions: Set<String> = []
+    @State private var correctQuestions: Set<String> = []
     @State private var showScrollIndicator = false
     @State private var totalPoints: Int = 0
     @State private var questions: [Question] = []
@@ -18,15 +19,16 @@ struct FeedView: View {
     private var currentProgress: Double {
         let totalCount = questions.count
         guard totalCount > 0 else { return 0 }
-        return Double(answeredQuestions.count) / Double(totalCount)
+        return Double(correctQuestions.count) / Double(totalCount)
     }
     
     private var quizResult: QuizResult? {
         QuizResult(
             subject: subject,
             difficulty: difficulty,
-            answeredQuestions: questions.filter { answeredQuestions.contains($0.id) },
-            totalQuestions: questions.count
+            answeredQuestions: questions.filter { correctQuestions.contains($0.id) },
+            totalQuestions: questions.count,
+            totalPoints: totalPoints
         )
     }
     
@@ -133,8 +135,9 @@ struct FeedView: View {
                                                         // Mark question as answered
                                                         answeredQuestions.insert(question.id)
                                                         
-                                                        // Update points
+                                                        // Update points and progress only if correct
                                                         if isCorrect {
+                                                            correctQuestions.insert(question.id)
                                                             withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
                                                                 totalPoints += 20
                                                             }

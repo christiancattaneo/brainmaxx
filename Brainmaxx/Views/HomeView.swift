@@ -120,7 +120,7 @@ struct HomeView: View {
                 
                 // Main content
                 VStack(spacing: 0) {
-                    // Title and Description
+                        // Title and Description
                     VStack(spacing: 24) {
                         // Centered title
                         VStack(spacing: 16) {
@@ -145,7 +145,7 @@ struct HomeView: View {
                         }
                         .frame(maxWidth: .infinity)
                         
-                        Text("Learn and Earn! 💸💸")
+                        Text("Learn and Earn 💸💸")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
@@ -153,28 +153,28 @@ struct HomeView: View {
                     }
                     .padding(.top, 60)
                     .padding(.bottom, 20)
-                    
-                    // Difficulty Selector
-                    Picker("Difficulty", selection: $selectedDifficulty) {
-                        ForEach(Difficulty.allCases, id: \.self) { difficulty in
-                            Text(difficulty.displayName)
-                                .tag(difficulty)
+                        
+                        // Difficulty Selector
+                        Picker("Difficulty", selection: $selectedDifficulty) {
+                            ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                                Text(difficulty.displayName)
+                                    .tag(difficulty)
+                            }
                         }
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .onChange(of: selectedDifficulty) { _, newDifficulty in
-                        print("🎚️ Difficulty changed to: \(newDifficulty.displayName)")
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal)
+                        .onChange(of: selectedDifficulty) { _, newDifficulty in
+                            print("🎚️ Difficulty changed to: \(newDifficulty.displayName)")
                         HapticManager.shared.selectionChanged()
-                        dataService.setDifficulty(newDifficulty)
-                    }
+                            dataService.setDifficulty(newDifficulty)
+                        }
                     .padding(.bottom, 20)
-                    
-                    // Subjects Grid or Error
+                        
+                        // Subjects Grid or Error
                     if dataService.loadingError != nil {
-                        VStack(spacing: 16) {
+                            VStack(spacing: 16) {
                             Image(systemName: "sparkles.rectangle.stack")
-                                .font(.system(size: 40))
+                                    .font(.system(size: 40))
                                 .foregroundColor(.blue)
                                 .padding(.bottom, 8)
                             
@@ -183,13 +183,13 @@ struct HomeView: View {
                             
                             Text("Try selecting a different difficulty level")
                                 .font(.body)
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
                                 .padding(.horizontal)
-                            
-                            Button {
-                                dataService.reloadQuestions()
-                            } label: {
+                                
+                                Button {
+                                    dataService.reloadQuestions()
+                                } label: {
                                 HStack {
                                     Image(systemName: "arrow.clockwise")
                                     Text("Try Again")
@@ -207,27 +207,27 @@ struct HomeView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                             .padding(.top, 8)
-                        }
-                        .padding()
+                            }
+                            .padding()
                         .frame(maxHeight: .infinity)
-                    } else if dataService.subjects.isEmpty {
+                        } else if dataService.subjects.isEmpty {
                         FuturisticLoadingView()
                             .frame(maxHeight: .infinity)
-                    } else {
-                        ScrollView {
-                            LazyVGrid(columns: [
-                                GridItem(.flexible(), spacing: 16),
-                                GridItem(.flexible(), spacing: 16)
-                            ], spacing: 16) {
-                                ForEach(dataService.subjects.filter { $0.id != "ai" }) { subject in
-                                    NavigationLink {
-                                        FeedView(
-                                            navigationPath: $navigationPath,
-                                            subject: subject,
-                                            difficulty: selectedDifficulty
-                                        )
-                                    } label: {
-                                        SubjectCard(subject: subject, difficulty: selectedDifficulty)
+                        } else {
+                            ScrollView {
+                                LazyVGrid(columns: [
+                                    GridItem(.flexible(), spacing: 16),
+                                    GridItem(.flexible(), spacing: 16)
+                                ], spacing: 16) {
+                                    ForEach(dataService.subjects.filter { $0.id != "ai" }) { subject in
+                                        NavigationLink {
+                                            FeedView(
+                                                navigationPath: $navigationPath,
+                                                subject: subject,
+                                                difficulty: selectedDifficulty
+                                            )
+                                        } label: {
+                                            SubjectCard(subject: subject, difficulty: selectedDifficulty)
                                     }
                                 }
                             }
@@ -240,7 +240,7 @@ struct HomeView: View {
                     
                     // AI Section at bottom
                     if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
-                        HStack(spacing: 16) {
+                            HStack(spacing: 16) {
                             // Icon with pulsing effect
                             ZStack {
                                 Circle()
@@ -251,29 +251,29 @@ struct HomeView: View {
                                     .font(.system(size: 24))
                                     .foregroundColor(.white)
                             }
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("AI Questions")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
                                 
-                                Text("Tap to create your own curriculum...")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white.opacity(0.9))
+                                VStack(alignment: .leading, spacing: 4) {
+                                Text("AI Questions")
+                                        .font(.system(size: 18, weight: .semibold))
+                                        .foregroundColor(.white)
+                                    
+                                    Text("Tap to create your own curriculum...")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white.opacity(0.9))
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .padding(8)
+                                    .background(Color.white.opacity(0.2))
+                                    .clipShape(Circle())
                             }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.white)
-                                .padding(8)
-                                .background(Color.white.opacity(0.2))
-                                .clipShape(Circle())
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 16)
-                        .background(
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 16)
+                            .background(
                             ZStack {
                                 LinearGradient(
                                     colors: [Color.blue, Color.purple],
@@ -282,19 +282,19 @@ struct HomeView: View {
                                 )
                                 AIGlowingBackground()
                             }
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .padding(.horizontal)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .padding(.horizontal)
                         .padding(.bottom, safeAreaInsets.bottom)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            withAnimation(.spring(response: 0.3)) {
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                withAnimation(.spring(response: 0.3)) {
                                 HapticManager.shared.buttonPress()
-                                showAIDialog = true
+                                    showAIDialog = true
+                                }
                             }
                         }
                     }
-                }
                 .background(Color(.systemBackground))
                 
                 // AI Subject Dialog
@@ -753,7 +753,7 @@ struct AISubjectDialog: View {
             // Main content
             GeometryReader { geometry in
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 24) {
+            VStack(spacing: 24) {
                         // Close button
                         HStack {
                             Spacer()
@@ -770,20 +770,20 @@ struct AISubjectDialog: View {
                         }
                         .padding(.horizontal, 20)
                         
-                        // Header
-                        VStack(spacing: 8) {
+                // Header
+                VStack(spacing: 8) {
                             Image(systemName: selectedSymbol)
-                                .font(.system(size: 40))
-                                .foregroundColor(.blue)
-                                .padding(.bottom, 8)
-                            
+                        .font(.system(size: 40))
+                        .foregroundColor(.blue)
+                        .padding(.bottom, 8)
+                    
                             Text("What would you like to learn?")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
                             Text("Enter any subject and I'll create a personalized curriculum for you")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                        .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal)
                         }

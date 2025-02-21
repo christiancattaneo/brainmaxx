@@ -64,8 +64,15 @@ struct QuestionView: View {
                             Text("Question:")
                                 .font(.headline)
                                 .foregroundColor(.secondary)
-                            MathView(content: question.question.originalMath ?? question.question.displayText)
-                                .frame(minHeight: 60)
+                            if let text = question.question.text, !text.isEmpty {
+                                Text(text)
+                                    .font(.body)
+                                    .padding(.bottom, 4)
+                            }
+                            if let math = question.question.originalMath {
+                                MathView(content: math)
+                                    .frame(minHeight: 60)
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.top, 20)

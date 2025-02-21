@@ -68,7 +68,7 @@ struct ResultsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 16) {
             // Header
             VStack(spacing: 8) {
                 HStack {
@@ -84,7 +84,7 @@ struct ResultsView: View {
                     .font(.title2)
                     .foregroundColor(.secondary)
             }
-            .padding(.top)
+            .padding(.top, 8)
             
             // Estimated SAT Score
             ResultCard(
@@ -135,10 +135,10 @@ struct ResultsView: View {
             .cornerRadius(16)
             .shadow(radius: 2)
             
-            Spacer()
+            Spacer(minLength: 20)
             
             // Action Buttons
-            VStack(spacing: 16) {
+            VStack(spacing: 12) {
                 ShareLink(
                     item: shareText,
                     preview: SharePreview(
@@ -166,9 +166,10 @@ struct ResultsView: View {
             }
             .padding(.horizontal)
         }
-        .padding()
+        .padding(.vertical, 16)
+        .padding(.horizontal)
         .background(Color(.systemGroupedBackground))
-        .interactiveDismissDisabled() // Prevent swipe to dismiss
+        .interactiveDismissDisabled()
     }
     
     private func formatCurrency(_ value: Int) -> String {
@@ -187,7 +188,7 @@ struct ResultCard: View {
     let color: Color
     
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 8) {
             // Title row
             HStack {
                 Image(systemName: icon)
@@ -203,9 +204,10 @@ struct ResultCard: View {
                 .font(.system(size: 40, weight: .bold))
                 .foregroundColor(color)
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, 4)
+                .padding(.bottom, 2)
         }
-        .padding()
+        .padding(.vertical, 12)
+        .padding(.horizontal)
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(radius: 1)
@@ -261,7 +263,8 @@ extension Notification.Name {
                 originalMath: nil
             ),
             images: []
-        ), count: 40),
-        totalQuestions: 44
+        ), count: 8),  // 8 correct answers
+        totalQuestions: 10,  // Out of 10 total questions
+        totalPoints: 160    // 8 correct answers * 20 points each
     ))
 } 

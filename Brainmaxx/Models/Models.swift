@@ -264,14 +264,15 @@ struct QuizResult {
     let difficulty: Difficulty
     let answeredQuestions: [Question]
     let totalQuestions: Int
+    let totalPoints: Int
     
     var score: Int {
-        answeredQuestions.reduce(0) { $0 + $1.points }
+        answeredQuestions.count  // Number of correct questions
     }
     
     var percentageCorrect: Double {
         guard totalQuestions > 0 else { return 0 }
-        return Double(score * 20) / Double(totalQuestions * 20) * 100
+        return Double(totalPoints) / Double(totalQuestions * 20) * 100
     }
     
     var grade: String {
