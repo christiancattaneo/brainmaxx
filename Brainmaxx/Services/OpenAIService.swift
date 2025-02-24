@@ -66,9 +66,11 @@ class OpenAIService {
         - Format: Multiple choice with 4 options
         - Include detailed explanations for correct and incorrect answers
         - Custom Prompt: \(customPrompt!)
+        - Include a brief educational lesson (2-4 sentences) that teaches the specific concept being tested in the question. This lesson should help the user learn what they need to know to answer the question correctly.
 
         Return the response in this exact JSON format:
         {
+            "lesson": "A concise, educational explanation of the concept being tested. This should teach the user what they need to know to answer the question.",
             "question": "The question text here",
             "options": [
                 "First option text",
@@ -97,9 +99,11 @@ class OpenAIService {
         - Difficulty: \(difficulty.displayName)
         - Format: Multiple choice with 4 options
         - Include detailed explanations for correct and incorrect answers
+        - Include a brief educational lesson (2-4 sentences) that teaches the specific concept being tested in the question. This lesson should help the user learn what they need to know to answer the question correctly.
 
         Return the response in this exact JSON format:
         {
+            "lesson": "A concise, educational explanation of the concept being tested. This should teach the user what they need to know to answer the question.",
             "question": "The question text here",
             "options": [
                 "First option text",
@@ -240,6 +244,7 @@ class OpenAIService {
                     topic: "Generated",
                     skill: "Generated",
                     difficulty: difficulty,
+                    lesson: json["lesson"] as? String,
                     question: Question.Content(
                         text: json["question"] as? String ?? "",
                         originalMath: nil,
@@ -256,6 +261,80 @@ class OpenAIService {
                 print("❌ JSON parsing error: \(error.localizedDescription)")
                 throw OpenAIError.parsingError("Failed to parse question data: \(error.localizedDescription)")
             }
+        } catch {
+            print("❌ API Request failed: \(error.localizedDescription)")
+            throw error
+        }
+    }
+
+    // MARK: - Simple Responses
+
+    /// Get a simple text response from OpenAI without JSON formatting
+    func getSimpleResponse(prompt: String) async throws -> String? {
+        guard !apiKey.isEmpty else {
+            print("❌ No valid API key available")
+            throw OpenAIError.missingAPIKey
+        }
+        
+        if apiKey == "YOUR_API_KEY_HERE" {
+            print("❌ Using placeholder API key")
+            throw OpenAIError.invalidAPIKey
+        }
+        
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Set a shorter timeout for quick responses
+        request.timeoutInterval = 10
+        
+        let systemPrompt = "You are a helpful assistant that provides very short, direct responses. Answer with just the exact information requested, nothing more."
+        
+        let requestBody: [String: Any] = [
+            "model": "gpt-4-turbo-preview",
+            "messages": [
+                ["role": "system", "content": systemPrompt],
+                ["role": "user", "content": prompt]
+            ],
+            "temperature": 0.3,  // Lower temperature for more deterministic responses
+            "max_tokens": 30     // Limit token count to encourage short responses
+        ]
+        
+        print("🌐 Making OpenAI API request for simple response...")
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ Invalid response type")
+                return nil
+            }
+            
+            print("📡 API Response Status: \(httpResponse.statusCode)")
+            
+            if httpResponse.statusCode != 200 {
+                if let errorString = String(data: data, encoding: .utf8) {
+                    print("❌ API Error: \(errorString)")
+                    throw NSError(domain: "OpenAI", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorString])
+                } else {
+                    throw NSError(domain: "OpenAI", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Unknown error"])
+                }
+            }
+            
+            let openAIResponse = try JSONDecoder().decode(OpenAIResponse.self, from: data)
+            print("✅ Successfully decoded API response")
+            
+            guard let content = openAIResponse.choices.first?.message.content else {
+                print("❌ No content in API response")
+                return nil
+            }
+            
+            print("📝 Raw API Response Content: \(content)")
+            return content
+            
         } catch {
             print("❌ API Request failed: \(error.localizedDescription)")
             throw error

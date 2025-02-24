@@ -119,6 +119,7 @@ struct Question: Identifiable, Codable {
     let topic: String
     let skill: String
     let difficulty: Difficulty
+    let lesson: String?
     
     struct OptionContent: Codable {
         let id: String

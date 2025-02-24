@@ -252,6 +252,7 @@ extension Notification.Name {
             topic: "Algebra",
             skill: "Test",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "Test",
                 originalMath: nil,

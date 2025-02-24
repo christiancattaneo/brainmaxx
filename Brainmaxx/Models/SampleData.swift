@@ -13,6 +13,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Linear equations in one variable",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "Solve for x:",
                 originalMath: "2x + 5 = 15",
@@ -44,6 +45,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Exponents and squares",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the value of 6² - 4²?",
                 originalMath: "What is the value of 6^2 - 4^2?",
@@ -73,6 +75,7 @@ struct SampleData {
             topic: "Geometry",
             skill: "Area of rectangles",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "If a rectangle has a length of 10 and a width of 4, what is its area?",
                 originalMath: "Area = length × width",
@@ -102,6 +105,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Evaluating expressions",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "If x = 3, what is the value of x³ - x?",
                 originalMath: "If x = 3, find x^3 - x",
@@ -133,6 +137,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Linear equations",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "If x + 2 = 10, what is x?",
                 originalMath: "x + 2 = 10",
@@ -163,6 +168,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Linear equations",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "If 3x - 5 = 16, what is x?",
                 originalMath: "3x - 5 = 16",
@@ -194,6 +200,7 @@ struct SampleData {
             topic: "Geometry",
             skill: "Triangle area",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "The area of a triangle is 24, and its base is 6. What is its height?",
                 originalMath: "<math>\\text{Given: Area} = 24, \\text{ base} = 6 \\\\ \\frac{1}{2} \\times \\text{base} \\times \\text{height} = 24</math>",
@@ -219,6 +226,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Polynomial evaluation",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the value of (2x + 3)(x - 4) when x = 5?",
                 originalMath: "<math>(2x + 3)(x - 4) \\text{ when } x = 5</math>",
@@ -244,6 +252,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Quadratic equations",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "Solve for x:",
                 originalMath: "<math>x^2 - 9 = 0</math>",
@@ -269,6 +278,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Quadratic equations",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the sum of the solutions to x² - 5x + 6 = 0?",
                 originalMath: "<math>x^2 - 5x + 6 = 0</math>",
@@ -294,6 +304,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Systems of equations",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "If 4x + 2y = 10 and 2x - y = 3, what is x?",
                 originalMath: "<math>\\begin{align*} 4x + 2y &= 10 \\\\ 2x - y &= 3 \\end{align*}</math>",
@@ -319,6 +330,7 @@ struct SampleData {
             topic: "Statistics",
             skill: "Averages",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "The average of 4 numbers is 10. If three of the numbers are 8, 12, and 9, what is the fourth number?",
                 originalMath: "<math>\\frac{8 + 12 + 9 + x}{4} = 10</math>",
@@ -344,6 +356,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Slope",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the slope of the line passing through (2, 3) and (6, 7)?",
                 originalMath: "<math>m = \\frac{y_2 - y_1}{x_2 - x_1}</math>",
@@ -369,6 +382,7 @@ struct SampleData {
             topic: "Fractions",
             skill: "Adding fractions",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What is 5/8 + 3/4?",
                 originalMath: "<math>\\frac{5}{8} + \\frac{3}{4}</math>",
@@ -394,6 +408,7 @@ struct SampleData {
             topic: "Fractions",
             skill: "Reciprocals",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the reciprocal of 3/5?",
                 originalMath: "\\text{reciprocal of } \\frac{3}{5}",
@@ -415,6 +430,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Complex equations",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "Solve for x in the equation: (2/x) + (3/(x+2)) = 1",
                 originalMath: "(2/x) + (3/(x+2)) = 1",
@@ -448,6 +464,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Exponents",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "If 4^x = 32, what is x?",
                 originalMath: "4^x = 32",
@@ -480,6 +497,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Sequences",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "The sum of three consecutive odd integers is 51. What is the largest number?",
                 originalMath: "x + (x+2) + (x+4) = 51",
@@ -511,6 +529,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Polynomial division",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the remainder when x³ - 2x + 4 is divided by x - 1?",
                 originalMath: "x^3 - 2x + 4 divided by (x - 1)",
@@ -540,6 +559,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Exponential equations",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "If 2^x = 8^(x-1), what is x?",
                 originalMath: "2^x = 8^(x-1)",
@@ -572,6 +592,7 @@ struct SampleData {
             topic: "Algebra",
             skill: "Complex fractions and exponents",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "Simplify: (√x + 2)² + (3/x) when x = 4",
                 originalMath: "(√4 + 2)^2 + (3/4)",
@@ -608,6 +629,7 @@ struct SampleData {
             topic: "Geometry",
             skill: "Perimeter",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "If a square has a perimeter of 24, what is its side length?",
                 originalMath: "<math>\\text{If } 4s = 24\\text{, what is } s\\text{?}</math>",
@@ -637,6 +659,7 @@ struct SampleData {
             topic: "Statistics",
             skill: "Finding median",
             difficulty: .easy,
+            lesson: nil,
             question: Question.Content(
                 text: "What is the median of the set {2, 5, 7, 8, 10}?",
                 originalMath: "<math>\\text{What is the median of the set } {2, 5, 7, 8, 10}\\text{?}</math>",
@@ -662,6 +685,7 @@ struct SampleData {
             topic: "Statistics",
             skill: "Averages",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "The average of 4 numbers is 10. If three of the numbers are 8, 12, and 9, what is the fourth number?",
                 originalMath: "<math>\\frac{8 + 12 + 9 + x}{4} = 10</math>",
@@ -693,6 +717,7 @@ struct SampleData {
             topic: "Grammar",
             skill: "Parts of Speech",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "In which of the following options is the word 'light' used as a verb?",
                 originalMath: nil,
@@ -718,6 +743,7 @@ struct SampleData {
             topic: "Grammar",
             skill: "Parallel Structure",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "Which sentence demonstrates correct parallel structure?",
                 originalMath: nil,
@@ -747,6 +773,7 @@ struct SampleData {
             topic: "Reading",
             skill: "Tone Analysis",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "In the passage below, which word best replaces 'luminous' to alter the tone from one of admiration to one of critique without changing the basic meaning of the sentence? 'The artist's latest piece is a luminous example of creativity and innovation, capturing the attention of all who view it.'",
                 originalMath: nil,
@@ -772,6 +799,7 @@ struct SampleData {
             topic: "Reading",
             skill: "Rhetorical Analysis",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "Which rhetorical device is most prominently used in the following sentence? 'The wind whispered through the willows, warning of the approaching storm.'",
                 originalMath: nil,

@@ -59,6 +59,27 @@ struct QuestionView: View {
             GeometryReader { geometry in
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 16) {
+                        // Lesson content - only show if available
+                        if let lesson = question.lesson, !lesson.isEmpty {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Learn:")
+                                    .font(.headline)
+                                    .foregroundColor(.blue)
+                                
+                                Text(lesson)
+                                    .font(.body)
+                                    .padding(.bottom, 8)
+                                    .foregroundColor(.primary)
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 20)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.blue.opacity(0.05))
+                                    .padding(.horizontal, 8)
+                            )
+                        }
+                        
                         // Question text with math formatting
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Question:")
@@ -400,6 +421,7 @@ struct QuestionView: View {
             topic: "Algebra",
             skill: "Linear equations in one variable",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What value of x satisfies the equation 2x + 5 = 15?",
                 originalMath: "<math>2x + 5 = 15</math>",
@@ -433,6 +455,7 @@ struct QuestionView: View {
             topic: "Algebra",
             skill: "Linear equations in one variable",
             difficulty: .medium,
+            lesson: nil,
             question: Question.Content(
                 text: "What value of x satisfies the equation 2x + 5 = 15?",
                 originalMath: "<math>2x + 5 = 15</math>",
@@ -467,6 +490,7 @@ struct QuestionView: View {
             topic: "Geometry",
             skill: "Linear equations in two variables",
             difficulty: .hard,
+            lesson: nil,
             question: Question.Content(
                 text: "In the coordinate plane shown above, what is the slope of line L?",
                 originalMath: "",
