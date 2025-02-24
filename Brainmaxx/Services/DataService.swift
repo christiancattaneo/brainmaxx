@@ -267,4 +267,47 @@ class DataService: ObservableObject {
         
         print("✅ Added/Updated AI subject: \(subject.name) with icon: \(subject.iconName)")
     }
+    
+    func deleteAISubject(withID id: String) {
+        // Load existing AI subjects
+        var aiSubjects = loadAISubjects() ?? []
+        
+        // Remove subject with the given ID
+        aiSubjects.removeAll { $0.id == id }
+        
+        // Save updated list to UserDefaults
+        do {
+            let data = try JSONEncoder().encode(aiSubjects)
+            UserDefaults.standard.set(data, forKey: aiSubjectsKey)
+            print("✅ Saved \(aiSubjects.count) AI subjects to storage after deletion")
+        } catch {
+            print("❌ Failed to save AI subjects after deletion: \(error)")
+        }
+        
+        // Update current subjects list
+        DispatchQueue.main.async {
+            self.subjects.removeAll { $0.id == id }
+            // Update cache with new data
+            self.saveToCache(subjects: self.subjects)
+        }
+        
+        print("✅ Deleted AI subject with ID: \(id)")
+    }
+    
+    func deleteAllAISubjects() {
+        // Remove all AI subjects from UserDefaults
+        UserDefaults.standard.removeObject(forKey: aiSubjectsKey)
+        
+        // Update current subjects list to remove AI subjects
+        DispatchQueue.main.async {
+            self.subjects.removeAll { subject in
+                // Remove all subjects with an ID that starts with "ai-"
+                subject.id.hasPrefix("ai-")
+            }
+            // Update cache with new data
+            self.saveToCache(subjects: self.subjects)
+        }
+        
+        print("✅ Deleted all AI subjects")
+    }
 }
