@@ -151,7 +151,7 @@ struct HomeView: View {
                         .padding()
                         .frame(maxHeight: .infinity)
                     } else if dataService.subjects.isEmpty {
-                        FuturisticLoadingView()
+                        BrainLoadingView()
                             .frame(maxHeight: .infinity)
                     } else {
                         ScrollView {
@@ -248,11 +248,12 @@ struct HomeView: View {
                             Text("This will permanently delete all your AI-generated subjects and their questions. This action cannot be undone.")
                         }
                     }
-                    
-                    Spacer(minLength: 0)
-                    
-                    // AI Section at bottom
-                    if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
+                }
+                
+                // AI Section at bottom - moved outside the main VStack to hover above everything
+                if let aiSubject = dataService.subjects.first(where: { $0.id == "ai" }) {
+                    VStack {
+                        Spacer()
                         HStack(spacing: 16) {
                             // Icon with pulsing effect
                             ZStack {
@@ -297,9 +298,11 @@ struct HomeView: View {
                             }
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 2)
                         .padding(.horizontal)
-                        .padding(.bottom, safeAreaInsets.bottom)
+                        .padding(.bottom, 4)
                         .contentShape(Rectangle())
+                        .zIndex(1)
                         .onTapGesture {
                             withAnimation(.spring(response: 0.3)) {
                                 HapticManager.shared.buttonPress()

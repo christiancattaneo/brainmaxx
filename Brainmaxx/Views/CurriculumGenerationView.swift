@@ -122,9 +122,16 @@ struct CurriculumGenerationView: View {
                     updatedSubject.updateTopics(["Generated": questions])
                     dataService.addOrUpdateAISubject(updatedSubject)
                     
+                    // Wait a moment to show completion, then dismiss both views
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        // Reset navigation path to return to home screen
                         navigationPath = NavigationPath()
+                        
+                        // Dismiss the generation view first
                         dismiss()
+                        
+                        // Post notification to dismiss the parent AI dialog too
+                        NotificationCenter.default.post(name: .dismissAIDialog, object: nil)
                     }
                 }
             } catch {
@@ -134,6 +141,11 @@ struct CurriculumGenerationView: View {
             }
         }
     }
+}
+
+// Add the notification name
+extension Notification.Name {
+    static let dismissAIDialog = Notification.Name("dismissAIDialog")
 }
 
 // A clean, simple progress line with nodes

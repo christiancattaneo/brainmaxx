@@ -33,173 +33,192 @@ struct FeedView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Progress Header
-            ProgressHeader(
-                points: totalPoints,
-                totalQuestions: questions.count,
-                difficulty: difficulty
-            )
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.systemBackground))
-                    .shadow(radius: 1)
-            )
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
+        ZStack {
+            // Main background for the entire view
+            AnimatedGradientBackground()
+                .ignoresSafeArea()
             
-            if dataService.isGeneratingQuestions {
-                VStack(spacing: 16) {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("Generating questions...")
-                        .font(.headline)
-                    Text("Using AI to create new questions for you")
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-                .frame(maxHeight: .infinity)
-            } else if let error = dataService.loadingError {
-                VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 40))
-                        .foregroundColor(.orange)
-                    Text("Error")
-                        .font(.headline)
-                    Text(error)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                    VStack(spacing: 8) {
-                        Button {
-                            Task {
-                                // Reload questions and try again
-                                dataService.reloadQuestions()
-                                questions = await dataService.getQuestionsForCurrentSelection()
-                            }
-                        } label: {
-                            Label("Try Again", systemImage: "arrow.clockwise")
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 12)
-                                .background(
-                                    LinearGradient(
-                                        colors: [.blue, .purple.opacity(0.8)],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .foregroundColor(.white)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
+            VStack(spacing: 0) {
+                // Progress Header should only show when we have questions
+                
+                if dataService.isGeneratingQuestions {
+                    ZStack {
+                        // No need for nested AnimatedGradientBackground
+                        // We already have one at the top level
                         
-                        Button("Return to Home") {
-                            dismiss()
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .scaleEffect(1.5)
+                            Text("Generating questions...")
+                                .font(.headline)
+                            Text("Using AI to create new questions for you")
+                                .foregroundColor(.secondary)
                         }
-                        .foregroundColor(.secondary)
+                        .padding()
                     }
-                }
-                .padding()
-                .frame(maxHeight: .infinity)
-            } else if questions.isEmpty {
-                VStack(spacing: 16) {
-                    FuturisticLoadingView(
-                        title: "Loading Questions",
-                        subtitle: "Finding questions at your level",
-                        showSparkles: false
-                    )
-                }
-                .padding()
-                .frame(maxHeight: .infinity)
-            } else {
-                GeometryReader { geometry in
+                    .frame(maxHeight: .infinity)
+                } else if let error = dataService.loadingError {
+                    ZStack {
+                        // No need for nested AnimatedGradientBackground
+                        // We already have one at the top level
+                        
+                        VStack(spacing: 16) {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.system(size: 40))
+                                .foregroundColor(.orange)
+                            Text("Error")
+                                .font(.headline)
+                            Text(error)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                            VStack(spacing: 8) {
+                                Button {
+                                    Task {
+                                        // Reload questions and try again
+                                        dataService.reloadQuestions()
+                                        questions = await dataService.getQuestionsForCurrentSelection()
+                                    }
+                                } label: {
+                                    Label("Try Again", systemImage: "arrow.clockwise")
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 12)
+                                        .background(
+                                            LinearGradient(
+                                                colors: [.blue, .purple.opacity(0.8)],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .foregroundColor(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                
+                                Button("Return to Home") {
+                                    dismiss()
+                                }
+                                .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding()
+                    }
+                    .frame(maxHeight: .infinity)
+                } else if questions.isEmpty {
+                    ZStack {
+                        // No need for nested AnimatedGradientBackground
+                        // We already have one at the top level
+                        
+                        BrainLoadingView(
+                            title: "Loading Questions",
+                            subtitle: "Finding questions at your level",
+                            showSparkles: false
+                        )
+                    }
+                    .frame(maxHeight: .infinity)
+                } else {
                     VStack(spacing: 0) {
-                        HStack(spacing: 0) {
-                            // Progress Bar
-                            ProgressBarView(progress: currentProgress)
-                                .frame(width: 32)
-                                .frame(maxHeight: .infinity)
-                                .padding(.leading, 8)
-                            
-                            // Main Feed
-                            ScrollViewReader { scrollProxy in
-                                ScrollView(.vertical, showsIndicators: false) {
-                                    VStack(spacing: 0) {
-                                        LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                                            ForEach(Array(questions.enumerated()).reversed(), id: \.element.id) { index, question in
-                                                QuestionView(
-                                                    question: question,
-                                                    showQuestion: .constant(true),
-                                                    onAnswered: { isCorrect in
-                                                        // Mark question as answered
-                                                        answeredQuestions.insert(question.id)
-                                                        
-                                                        // Update points and progress only if correct
-                                                        if isCorrect {
-                                                            correctQuestions.insert(question.id)
-                                                            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
-                                                                totalPoints += 20
-                                                            }
-                                                            
-                                                            // Show scroll indicator after correct answer
-                                                            withAnimation {
-                                                                showScrollIndicator = true
-                                                            }
-                                                            
-                                                            // Auto-scroll to next question (if not the last one)
-                                                            if index > 0 {
-                                                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                                                    currentIndex = index - 1
-                                                                    scrollProxy.scrollTo(questions[currentIndex].id, anchor: .bottom)
+                        // Only show Progress Header when questions are loaded
+                        ProgressHeader(
+                            points: totalPoints,
+                            totalQuestions: questions.count,
+                            difficulty: difficulty
+                        )
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                    
+                        GeometryReader { geometry in
+                            VStack(spacing: 12) {
+                                HStack(spacing: 16) {
+                                    // Progress Bar
+                                    ProgressBarView(progress: currentProgress)
+                                        .frame(width: 32)
+                                        .frame(maxHeight: .infinity)
+                                        .padding(.leading, 8)
+                                        .padding(.trailing, 4)
+                                    
+                                    // Main Feed
+                                    ScrollViewReader { scrollProxy in
+                                        ScrollView(.vertical, showsIndicators: false) {
+                                            VStack(spacing: 0) {
+                                                LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                                                    ForEach(Array(questions.enumerated()).reversed(), id: \.element.id) { index, question in
+                                                        QuestionView(
+                                                            question: question,
+                                                            showQuestion: .constant(true),
+                                                            onAnswered: { isCorrect in
+                                                                // Mark question as answered
+                                                                answeredQuestions.insert(question.id)
+                                                                
+                                                                // Update points and progress only if correct
+                                                                if isCorrect {
+                                                                    correctQuestions.insert(question.id)
+                                                                    withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                                                                        totalPoints += 20
+                                                                    }
+                                                                    
+                                                                    // Show scroll indicator after correct answer
+                                                                    withAnimation {
+                                                                        showScrollIndicator = true
+                                                                    }
+                                                                    
+                                                                    // Auto-scroll to next question (if not the last one)
+                                                                    if index > 0 {
+                                                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                                                            currentIndex = index - 1
+                                                                            scrollProxy.scrollTo(questions[currentIndex].id, anchor: .bottom)
+                                                                        }
+                                                                    }
+                                                                    
+                                                                    // Hide indicator after delay
+                                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                                        withAnimation {
+                                                                            showScrollIndicator = false
+                                                                        }
+                                                                    }
+                                                                }
+                                                                
+                                                                // Check if all questions are answered
+                                                                if answeredQuestions.count == questions.count {
+                                                                    showResults = true
+                                                                }
+                                                            },
+                                                            onSimplifiedQuestion: { newQuestion in
+                                                                // Insert the simplified question after the current one
+                                                                if let currentIndex = questions.firstIndex(where: { $0.id == question.id }) {
+                                                                    withAnimation(.spring(response: 0.6)) {
+                                                                        questions.insert(newQuestion, at: currentIndex)
+                                                                        // Update current index to point to the new question
+                                                                        self.currentIndex = questions.count - currentIndex - 1
+                                                                    }
+                                                                    
+                                                                    // Scroll to the new question after a brief delay
+                                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                                                            scrollProxy.scrollTo(newQuestion.id, anchor: .center)
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
-                                                            
-                                                            // Hide indicator after delay
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                                withAnimation {
-                                                                    showScrollIndicator = false
-                                                                }
-                                                            }
-                                                        }
-                                                        
-                                                        // Check if all questions are answered
-                                                        if answeredQuestions.count == questions.count {
-                                                            showResults = true
-                                                        }
-                                                    },
-                                                    onSimplifiedQuestion: { newQuestion in
-                                                        // Insert the simplified question after the current one
-                                                        if let currentIndex = questions.firstIndex(where: { $0.id == question.id }) {
-                                                            withAnimation(.spring(response: 0.6)) {
-                                                                questions.insert(newQuestion, at: currentIndex)
-                                                                // Update current index to point to the new question
-                                                                self.currentIndex = questions.count - currentIndex - 1
-                                                            }
-                                                            
-                                                            // Scroll to the new question after a brief delay
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                                                    scrollProxy.scrollTo(newQuestion.id, anchor: .center)
-                                                                }
-                                                            }
-                                                        }
+                                                        )
+                                                        .frame(width: geometry.size.width - 32, height: geometry.size.height - 32)
+                                                        .id(question.id)
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 4)
                                                     }
-                                                )
-                                                .frame(width: geometry.size.width - 16, height: geometry.size.height - 16)
-                                                .id(question.id)
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
+                                                }
                                             }
                                         }
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: geometry.size.height - 60)
+                                        .clipShape(Rectangle())
+                                        .scrollDisabled(true)  // Disable manual scrolling
                                     }
+                                    .ignoresSafeArea(.keyboard)  // Prevent keyboard from pushing content
                                 }
-                                .frame(maxWidth: .infinity)
-                                .frame(height: geometry.size.height - 40)
-                                .clipShape(Rectangle())
-                                .scrollDisabled(true)  // Disable manual scrolling
                             }
-                            .ignoresSafeArea(.keyboard)  // Prevent keyboard from pushing content
+                            .padding(.top, 8)
                         }
                     }
                 }
@@ -277,9 +296,10 @@ struct ProgressBarView: View {
         ZStack {
             // Background track
             Rectangle()
-                .fill(Color.gray.opacity(0.2))
+                .fill(Color.white.opacity(0.95))
                 .frame(maxWidth: 32)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                 .padding(.vertical, 32) // Add padding to shorten the bar
             
             // Progress fill

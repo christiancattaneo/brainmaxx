@@ -85,6 +85,30 @@ struct ProgressHeader: View {
         }
         .padding(.vertical, 24)
         .padding(.horizontal, 24)
+        .background(
+            // Update background to white with glass effect
+            Group {
+                if #available(iOS 15.0, *) {
+                    // Use a light material with white tint
+                    ZStack {
+                        Rectangle()
+                            .fill(Color.white.opacity(0.85))
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .opacity(0.5)
+                    }
+                } else {
+                    // For older iOS versions
+                    Rectangle()
+                        .fill(Color.white.opacity(0.95))
+                        .background(
+                            VisualEffectView(effect: UIBlurEffect(style: .light))
+                        )
+                }
+            }
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        )
         .onChange(of: points) { oldValue, newValue in
             if newValue > oldValue {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {

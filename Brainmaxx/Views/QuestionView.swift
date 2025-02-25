@@ -333,16 +333,23 @@ struct QuestionView: View {
             
             // Loading overlay
             if showLoadingView {
-                FuturisticLoadingView(
-                    title: "Generating Simpler Question",
-                    subtitle: "Using AI to break down the concept",
-                    showSparkles: true
-                )
+                ZStack {
+                    // Animated background gradients - blurred for overlay effect
+                    AnimatedGradientBackground()
+                        .blur(radius: 10)
+                        
+                    BrainLoadingView(
+                        title: "Generating Simpler Question",
+                        subtitle: "Using AI to break down the concept",
+                        showSparkles: true
+                    )
+                }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(.systemBackground))
+                        .fill(Color(.systemBackground).opacity(0.7))
+                        .blur(radius: 8)
                 )
                 .padding(.top, 20)
                 .transition(.move(edge: .top).combined(with: .opacity))

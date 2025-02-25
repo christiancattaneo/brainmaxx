@@ -64,7 +64,7 @@ struct AISubjectDialog: View {
                     .font(.title2.bold())
                     .multilineTextAlignment(.center)
                 
-                Text("Enter any subject and create a personalized curriculum!")
+                Text("Create a personalized curriculum!")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -147,6 +147,10 @@ struct AISubjectDialog: View {
         }
         .onAppear {
             isInputFocused = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .dismissAIDialog)) { _ in
+            // When curriculum generation completes, dismiss this dialog too
+            dismiss()
         }
         .fullScreenCover(isPresented: $showCurriculumGeneration) {
             CurriculumGenerationView(
